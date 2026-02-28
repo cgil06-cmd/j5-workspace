@@ -85,6 +85,62 @@ chmod 600 ~/.openclaw/.env
 
 ---
 
+## SKILL SECURITY PROTOCOL — Before Any Install
+
+Every skill goes through this before it touches the system. No exceptions.
+Standard: "Would Matthew Berman's security council approve this?"
+
+### The 6-Point Check:
+
+**1. No unknown outbound calls**
+Read every line. Any network request to anything other than the skill's stated service = rejected.
+Red flags: hardcoded URLs, dynamic URL construction, any call to non-official endpoints.
+
+**2. No credential scope creep**
+Skill only accesses what it explicitly needs. A calendar skill has no business touching your email credentials.
+Check: what env variables does it require? Do they match the stated function?
+
+**3. Open source preferred**
+If we can read every line of code, it gets green light consideration.
+If it's compiled or obfuscated — extra scrutiny, likely rejected.
+
+**4. Known publisher**
+Anonymous publisher + zero installs + created last week = hard no.
+Acceptable: official OpenClaw skills, well-known npm packages with history, community skills with real install counts.
+
+**5. Pastoral ethics layer**
+Would this embarrass Curtis as a pastor?
+Could it expose congregation data?
+Does it touch anything sensitive (financial, pastoral care, family)?
+If yes to any — additional review required before install.
+
+**6. ClawHub scanner passed**
+If ClawHub's own scanner flags it as suspicious — do not install regardless of other factors.
+We never use --force to override a security flag.
+
+### Verdict format (required for every skill):
+```
+SKILL: [name]
+PUBLISHER: [known/unknown]
+NETWORK CALLS: [only to X / suspicious]
+CREDENTIAL ACCESS: [only needs X]
+OPEN SOURCE: [yes/no]
+CLAWHUB FLAG: [clean/flagged]
+PASTORAL RISK: [none/low/medium/high]
+VERDICT: APPROVED / REJECTED / HOLD
+REASON: [one sentence]
+```
+
+### Skills approved to date:
+- todoist — APPROVED (official npm package, only calls api.todoist.com)
+- deepgram — APPROVED (official @deepgram/cli, only calls api.deepgram.com)
+- ynab — APPROVED with conditions (only calls api.ynab.com; financial data in private chat only)
+
+### Skills rejected to date:
+- google-calendar — REJECTED (ClawHub flagged as suspicious; connect via OAuth directly instead)
+
+---
+
 ## GIT / WORKSPACE BACKUP
 ```
 cd /Users/j5/.openclaw/workspace

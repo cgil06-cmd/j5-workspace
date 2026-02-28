@@ -55,6 +55,9 @@ Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, ph
 - Melissa — Operations/Finance
 - Amanda, Jess, Mike — roles to be confirmed
 
+## PASTORAL PRESENCE AI (major product idea — 2026-02-28)
+Curtis's idea: automated personalized audio responses in his cloned voice when people message him. Every person feels valued, acknowledged, cared for — in Curtis's actual voice — within minutes. Five tiers from warm acknowledgment to crisis detection to proactive relationship touches. Technical spec built. ElevenLabs + Herald + Bridge + BlueBubbles. Revenue potential: $339,500/month at 1% of US pastors. First step: Curtis records 30 min of natural speech for ElevenLabs voice clone. This is both a personal system AND a product.
+
 ## F&F MASTER BRIEF (saved)
 - Core theology: Simul Justus et Peccator (Simultaneously Justified and Sinner)
 - The F&F Loop: Trigger → Pivot → Inflow → Outflow

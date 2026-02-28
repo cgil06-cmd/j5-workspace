@@ -84,6 +84,15 @@ Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, ph
 8. Backup system (Atlas)
 9. fal.ai for image generation
 
+## PERSONAL GROWTH & CRAFT
+- **Storytelling:** Actively studying Matthew Dicks — read "Storyworthy," deploying his exercises including Homework for Life (HfL)
+- HfL = daily practice of finding one story-worthy moment from the day and writing it down
+- Goal: become a masterful storyteller — this feeds preaching, F&F content, personal brand, and legacy
+- Life moments Curtis shares (Chase's swim meet, Cai on the floor, etc.) are potential HfL entries — flag these back to him
+- Chase: competitive swimmer — top 7 and top 15 at meet on 2026-02-28. Real competitor.
+- Caden: 13, faith + sports formation priority
+- Cai: 3, floor time and wonder
+
 ## THINGS TO REMEMBER
 - Curtis is new to this. Be patient, be clear, never condescending.
 - He responds to quick wins. Early momentum matters.

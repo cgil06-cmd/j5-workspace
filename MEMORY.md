@@ -41,9 +41,11 @@ That's the mission. Everything else is in service of that.
 - **Cipher** — Cost Sentinel / CFO
 - **Sentinel** — Security Agent
 - **Oracle** — Memory / Knowledge Base
-- **Shepherd** — Pastoral CRM
+- **Shepherd** — Pastoral CRM (all of life, not just church)
 - **Scribe** — Sermon Research & Prep
 - **Steward** — Finance / YNAB Monitor
+- **Catalyst** — CRO / Entrepreneurial Coach / Product Developer / Marketing Strategist (F&F revenue engine)
+- **Maven** — Personal Brand Manager (YouTube, Substack, social — starts when calendar is cleared)
 
 ## FULL TOOL STACK
 Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, phasing out Outlook), Slack (staff/Natalie), YNAB, Hazel, TurboScribe, Just Press Record, Telegram, OpenClaw, Claude, NotebookLM, Gemini, Perplexity, Grok, ChatGPT, Manus AI. Deepgram wanted.
@@ -53,10 +55,22 @@ Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, ph
 - Melissa — Operations/Finance
 - Amanda, Jess, Mike — roles to be confirmed
 
+## F&F MASTER BRIEF (saved)
+- Core theology: Simul Justus et Peccator (Simultaneously Justified and Sinner)
+- The F&F Loop: Trigger → Pivot → Inflow → Outflow
+- Four Faces: The Hider, The Striver, The Critic, The Pretender
+- Content pillars: Authenticity First + The "And" Frequency
+- Both/And brand language: Anxious AND Faithful, Broken AND Beloved
+- AI education opportunity identified as potentially separate brand (Pastoral.ai / Mission AI)
+- YouTube video reference: "How I use Claude CoWork to build a 500k business model" — needs full analysis
+
 ## WHAT'S BUILT
 - Foundation files: SOUL.md, AGENTS.md, USER.md, IDENTITY.md, TOOLS.md, MEMORY.md
 - Matthew B reference architecture saved
-- Agent image prompts written (8 agents)
+- Agent image prompts written (10 agents including Catalyst + Maven)
+- FF_MASTER_BRIEF.md — full F&F theology, Loop, Faces, strategy
+- FF_AI_EDUCATION_PLAN.md — market analysis, brand proposal, business plan
+- FF_BRAND_FRAMEWORK.md — content pillars and community mechanisms
 - Git repo initialized, all committed
 
 ## WHAT'S NEXT (in order)

@@ -201,6 +201,51 @@ Curtis's gut wins on name. These are starting points.
 
 ---
 
+## THE WORKSHOP SERIES
+*Grief education people want BEFORE they need it.*
+
+Most people won't download a grief app until someone dies. But they'll show up to a Tuesday night workshop at their church when they're 45, their parents are aging, and they realize they have no idea what probate means.
+
+### The Five Workshops:
+
+**1. Before the Loss — Get Ready Now**
+Wills, trusts, end-of-life conversations, powers of attorney, what to have in place so your family isn't scrambling. The conversation most families avoid until it's too late.
+
+**2. The First 72 Hours — What To Do When Someone Dies**
+Exactly what to do, in order, when it happens. Who to call. What not to do. What decisions can wait. The practical hand nobody extends.
+
+**3. Navigating the Estate — Plain English**
+Probate, accounts, benefits, life insurance claims, digital estate. All of it explained without jargon by people who've been through it.
+
+**4. Grief That Lasts — The Long Middle**
+The casseroles stop. Everyone moves on. You don't. Secondary losses, the first year, the firsts — birthday, Christmas, anniversary of the death. What healthy grief actually looks like.
+
+**5. Legacy While You Can**
+Recording family stories before it's too late. Legacy letters. What you want to leave. The conversations most families never have and always wish they did.
+
+### Each Workshop Includes:
+- Live event at GardenCity Church (test bed for everything)
+- Recorded and packaged as a digital course
+- Workbook — actual forms, checklists, templates, scripts
+- Three voices in the room: Curtis (pastoral + personal loss experience), a vetted estate attorney, a licensed grief counselor
+
+### Why Three Voices?
+Because nobody has all three. The attorney doesn't know how to hold grief. The counselor doesn't know probate. The pastor doesn't know estate law. Together they cover every dimension of what a family actually needs. Curtis is the connective tissue — the person who lost his parents, figured it out the hard way, and built the thing he needed.
+
+### The Rollout:
+1. GardenCity hosts it live — tests the content, gathers feedback
+2. Record and package as digital courses ($97-$197 each)
+3. License to other churches as a ministry resource
+4. Offer as a standalone event for other pastors to host
+5. Bundle all five as "Through the Valley Complete" ($497)
+
+### The Moat:
+Curtis isn't a grief expert who studied loss academically.
+He's a pastor who buried his parents without a guide.
+That credential is not available for purchase.
+
+---
+
 ## FIRST STEPS TO BUILD
 1. Curtis writes (or voice-records) the story of losing his parents — what he needed, what he didn't have. This becomes the soul of the product.
 2. Map the 72-hour checklist in full — every decision, every call, every document.

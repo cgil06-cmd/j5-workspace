@@ -1,6 +1,6 @@
 # PRAYER GUIDE
 ## Ephesians, Pt. 2: Identity Inhabited
-## Ephesians 1:17-23 | Garden City Church
+## Ephesians 1:17-23 | GardenCity Church
 ## Sunday, March 1, 2026
 
 ---
@@ -164,7 +164,7 @@ Make us the kind of community
 where inhabitation is possible
 because the house feels safe.
 
-Make Garden City Church
+Make GardenCity Church
 what you called it to be —
 your dwelling place in this city.
 Christ's fullness, expressed here.
@@ -194,5 +194,5 @@ Amen.
 
 ---
 
-*Garden City Church | Ephesians Series | March 1, 2026*
+*GardenCity Church | Ephesians Series | March 1, 2026*
 *Prepared for pastoral use — Curtis Gilbert*

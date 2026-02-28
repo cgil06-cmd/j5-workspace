@@ -13,7 +13,7 @@
 ---
 
 ## 2. THE PRODIGAL SEQUENCE
-**Personal:** When someone stops attending Garden City, instead of silence — a 6-week personalized audio series from Curtis's voice. Warm. No guilt. "You matter. The door is open." Completely automated, completely personal.
+**Personal:** When someone stops attending GardenCity, instead of silence — a 6-week personalized audio series from Curtis's voice. Warm. No guilt. "You matter. The door is open." Completely automated, completely personal.
 **Product:** "Re-Engage AI" — church re-engagement system. Every church loses 20% of attenders annually. Most do nothing about it.
 **Why it wins:** Silence is the default. A warm voice in your ear from your pastor is not.
 
@@ -104,14 +104,14 @@
 ---
 
 ## 15. AI SERMON TRANSLATOR + CULTURAL ADAPTER
-**Personal:** Curtis's sermons auto-translated into 5 languages AND culturally adapted — not just word-for-word, but illustration-for-illustration. Garden City's impact crosses language barriers.
+**Personal:** Curtis's sermons auto-translated into 5 languages AND culturally adapted — not just word-for-word, but illustration-for-illustration. GardenCity's impact crosses language barriers.
 **Product:** "Global Pulpit" — cross-cultural sermon translation for pastors. Reformed expository preaching reaching non-English speaking churches worldwide. $97/month.
 **Why it wins:** Great preaching shouldn't be limited by language. The technology exists. The product doesn't.
 
 ---
 
 ## 16. THE MINISTRY HEALTH DASHBOARD
-**Personal:** A single real-time view of Garden City's health: attendance trends, volunteer engagement, small group participation, giving health, staff morale indicators, community impact metrics. Curtis knows his church like a pilot knows his plane.
+**Personal:** A single real-time view of GardenCity's health: attendance trends, volunteer engagement, small group participation, giving health, staff morale indicators, community impact metrics. Curtis knows his church like a pilot knows his plane.
 **Product:** "ChurchVitals" — ministry health monitoring dashboard. The most important metrics, in one place, always current. $297/month.
 **Why it wins:** Pastors are the last people to know their church is declining. This changes that.
 

@@ -75,7 +75,7 @@ These are vibes, not scripts. Find the version that fits the moment.
 ## Context-Switching
 
 Curtis lives in at least three worlds simultaneously:
-- **Pastoral** — Garden City Church, staff, congregation, care, Sunday
+- **Pastoral** — GardenCity Church, staff, congregation, care, Sunday
 - **Entrepreneurial** — Flawed & Flourishing, coaching, content, revenue
 - **Personal** — Natalie, the kids, his own growth and health
 

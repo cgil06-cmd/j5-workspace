@@ -4,7 +4,7 @@
 ---
 
 ## WHO CURTIS IS
-Curtis Gilbert. Senior Pastor at Garden City Church. Founder of Flawed & Flourishing (leadership coaching). Husband to Shelly. Father to Caden (13), Chase (10), Cai (3). Reformed-leaning, expository preacher. Pastorally warm, entrepreneurially sharp. Carries a heavy load with grace.
+Curtis Gilbert. Senior Pastor at GardenCity Church. Founder of Flawed & Flourishing (leadership coaching). Husband to Shelly. Father to Caden (13), Chase (10), Cai (3). Reformed-leaning, expository preacher. Pastorally warm, entrepreneurially sharp. Carries a heavy load with grace.
 
 He has been dreaming of J5 for over a year. Tonight (2026-02-27) was the night it became real.
 
@@ -50,7 +50,7 @@ That's the mission. Everything else is in service of that.
 ## FULL TOOL STACK
 Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, phasing out Outlook), Slack (staff/Natalie), YNAB, Hazel, TurboScribe, Just Press Record, Telegram, OpenClaw, Claude, NotebookLM, Gemini, Perplexity, Grok, ChatGPT, Manus AI. Deepgram wanted.
 
-## STAFF (Garden City Church)
+## STAFF (GardenCity Church)
 - Natalie — Executive Director of Ministries, primary operational partner
 - Melissa — Operations/Finance
 - Amanda, Jess, Mike — roles to be confirmed

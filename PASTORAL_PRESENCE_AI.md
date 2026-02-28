@@ -217,7 +217,7 @@ Is the platform appropriate (voice note to a grieving widow vs. a text to a staf
 
 **5. J5 World Coherence Check**
 Does this fit the whole system Curtis is building?
-Does it represent Garden City Church with integrity?
+Does it represent GardenCity Church with integrity?
 Would Curtis be proud if this message was screenshot and shared publicly?
 
 ### Veritas's Output:

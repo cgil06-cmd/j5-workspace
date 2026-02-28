@@ -64,7 +64,7 @@ J5 will update SOUL.md from the conversation.
 
 ### Suggested Topics for Curtis
 - **general** — main conversation, catch-all
-- **church** — Garden City Church work
+- **church** — GardenCity Church work
 - **coaching** — Flawed & Flourishing
 - **daily-brief** — morning summary (cron-owned)
 - **cron-updates** — failures and system alerts only

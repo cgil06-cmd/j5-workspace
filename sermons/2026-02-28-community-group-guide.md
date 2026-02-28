@@ -1,6 +1,6 @@
 # COMMUNITY GROUP GUIDE
 ## Ephesians, Pt. 2: Identity Inhabited
-## Ephesians 1:17-23 + 2:21-22 | Garden City Church
+## Ephesians 1:17-23 + 2:21-22 | GardenCity Church
 
 ---
 
@@ -107,4 +107,4 @@ Then give space for anyone to pray specifically for someone else in the room —
 
 ---
 
-*Garden City Church | Ephesians Series | February 2026*
+*GardenCity Church | Ephesians Series | February 2026*

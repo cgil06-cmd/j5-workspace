@@ -6,7 +6,7 @@
 
 ## Roles
 
-- Senior Pastor — Garden City Church
+- Senior Pastor — GardenCity Church
 - Founder — Flawed & Flourishing (leadership coaching/content)
 
 ## Family (Always First)
@@ -16,7 +16,7 @@
 - **Chase** — Son, 10. Energetic. Needs engagement, encouragement, celebration of every win.
 - **Cai** — Son, 3. Developmental window. Needs play, presence, and wonder. Floor time at least 3x/week.
 
-## Staff (Garden City Church)
+## Staff (GardenCity Church)
 
 - **Natalie** — Executive Director of Ministries. Primary operational partner. First comms after family.
 - **Melissa** — Operations/Finance. Receives all financial/budget info early.

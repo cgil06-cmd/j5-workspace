@@ -458,3 +458,71 @@ Plain Node.js, better-sqlite3, node-fetch.
 
 *This document is updated every time a new module is built.*
 *Every module has a working Claude Code prompt so Curtis can rebuild it himself.*
+
+---
+
+## LESSONS LEARNED — Building J5 (Live Log)
+*These are real lessons from the actual build. Anyone replicating J5 should read these.*
+
+### Session 1-2 (Feb 27-28, 2026)
+
+**On Identity First:**
+The single most important thing before any technical setup: write the SOUL.md, IDENTITY.md, and USER.md files. These are not decoration. They are the operating system. Every agent decision flows from them. Do these before touching the terminal.
+
+**On Security:**
+- Never paste API keys in chat — they get logged
+- Use nano for long tokens (smart quotes in Telegram break terminal paste)
+- App folder scope on Dropbox — never full access
+- Matthew B standard: every skill audited before install, no exceptions
+- Pastoral/financial data gets tiered access — hard walls, not soft guidelines
+
+**On Voice Messages:**
+- Whisper (local) handles daily Telegram voice memos perfectly
+- Install: `pip3 install openai-whisper`
+- Transcribe: `python3 -c "import whisper; model = whisper.load_model('base'); result = model.transcribe('/path/to/file.ogg'); print(result['text'])"`
+- Deepgram handles longer recordings (meetings, full sessions) — needs API key
+
+**On Dropbox Integration:**
+- Create Dropbox app at dropbox.com/developers
+- Use "App folder" scope — not full Dropbox
+- Enable permissions: files.metadata.read + files.content.read
+- OAuth token via browser (not generated token — permissions require re-auth)
+- Token goes to `~/.openclaw/.env` via nano
+- API base: `https://api.dropboxapi.com/2/` and `https://content.dropboxapi.com/2/`
+
+**On OpenRouter:**
+- Single API key unlocks 343 models
+- Model routing: Haiku (cheap/fast) → Sonnet (standard) → Opus (deep, ask first)
+- Key goes in `~/.openclaw/.env` as `OPENROUTER_API_KEY=`
+- Run `openclaw doctor --fix` then `openclaw gateway install && openclaw gateway start`
+
+**On Momentum:**
+- Start every work session with a 1-2 punch of easy wins
+- Curtis's pattern: motivated in bursts, paralyzed by friction — design for this
+- Emotional Load awareness is operational, not optional
+- "Green/Yellow/Red/Blue" check before any major task
+
+**On File Access:**
+- Dropbox app folder = most secure path for giving J5 file access
+- PARA structure (Projects/Areas/Resources/Archive) maps perfectly to J5's brain
+- Every file drop is a learning opportunity — J5 should read proactively
+- Confidentiality tiers enforced by folder structure, not just intent
+
+**On the J5 Master Bible:**
+Curtis built an 8-part operating system before J5 was real. Key components to replicate:
+1. Identity Stack (Man → Husband → Father → Pastor → Leader → Founder → Administrator)
+2. Three Modes (Pastor / Executive / Founder)
+3. Emotional Load Theory (Green / Yellow / Red / Blue)
+4. Communication OS (windows, tiers, tone)
+5. Meeting OS (prep, posture, type)
+6. Calendar OS (sacred blocks, operating calendar)
+7. Daily/Weekly Rhythms (brief times, deep work blocks)
+8. Templates & Quickstart Cards
+
+**On J5 as Product:**
+Curtis said: "you might become a prototype for us to help change lives"
+- Document every decision, protocol, and lesson for replication
+- The build for one pastor-entrepreneur IS the product for thousands
+- Target: any leader drowning in communication, pastoral care, and business simultaneously
+- Revenue model: setup fee + monthly + community
+

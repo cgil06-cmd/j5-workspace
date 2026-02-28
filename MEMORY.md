@@ -74,15 +74,29 @@ Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, ph
 - Git repo initialized, all committed
 
 ## WHAT'S NEXT (in order)
-1. Google Calendar connection
-2. Morning brief cron (4:30 AM)
-3. Deepgram setup
-4. Todoist integration
-5. Slack activation
-6. YNAB connection (flag sensitive data first)
-7. SQLite databases (CRM, knowledge base, cost tracking)
-8. Backup system (Atlas)
-9. fal.ai for image generation
+1. OpenRouter API key (via Terminal when home)
+2. Google Calendar connection
+3. Morning brief cron (4:30 AM)
+4. Deepgram setup
+5. Todoist integration
+6. Slack activation
+7. YNAB connection (flag sensitive data first)
+8. SQLite databases (CRM, knowledge base, cost tracking, story vault)
+9. Backup system (Atlas)
+10. fal.ai for image generation
+11. ElevenLabs voice clone (one recording session)
+12. HeyGen avatar (one 2-min recording)
+13. BlueBubbles (iMessage → J5 pipeline, potential product)
+14. Tailscale fully configured across all devices
+
+## STORY VAULT (build list)
+- Dedicated SQLite database for Homework for Life entries
+- Each entry tagged: date, people involved, emotion, theme, potential application (sermon/F&F/personal brand)
+- Searchable: "find stories about failure and grace" → returns relevant entries
+- Bridge agent flags story-worthy moments Curtis shares in conversation
+- Weekly prompt: "What was your HfL moment this week?"
+- Feeds: sermon prep, F&F content, personal brand, keynote speaking
+- Long-term: 10 years of entries = a book, a course, a legacy
 
 ## PERSONAL GROWTH & CRAFT
 - **Storytelling:** Actively studying Matthew Dicks — read "Storyworthy," deploying his exercises including Homework for Life (HfL)

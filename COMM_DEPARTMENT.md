@@ -1,5 +1,6 @@
 # J5 COMMUNICATION DEPARTMENT
 ## Full Design | Curtis Gilbert | 2026-02-28
+## Agent Roster: Dispatch, Herald, Sentinel-Comm, Bridge, Architect, Forge-Comm, Triage, VERITAS
 
 ---
 
@@ -189,6 +190,30 @@ This turns your iPhone into a J5 capture device for any communication or thought
 3. **That 45-minute text backlog session** — one time, then it's clean forever
 4. **Confirmation of relationship tiers** — who are your Tier 1 relationships? (Shelly, kids, Jeremy, Brett, who else?)
 5. **Your voice samples** — 3-5 emails or texts you've written that sound most like you. Herald builds your voice guide from these.
+
+---
+
+---
+
+## VERITAS — COMMUNICATIONS INTEGRITY AGENT
+**Role:** Quality control. Every outbound message passes through Veritas before it sends.
+**Reports to:** J5 (Chief of Staff)
+**Works with:** Herald (writes), Veritas (audits), then sends
+
+### The Five Checks Veritas runs on every outbound message:
+1. **Truth** — no fabricated details, assumed context, or hallucinated history
+2. **Consistency** — matches Curtis's voice, theology, relational history; one character, no contradictions
+3. **Scope** — staying in lane; not over-promising, not crossing into territory Curtis must handle personally
+4. **Tone** — right warmth for this relationship tier, this situation, this platform
+5. **Integrity** — would Curtis be proud if this was screenshot and shared publicly?
+
+### Veritas outputs:
+- PASS → sends
+- EDIT → rewrites flagged portion, resubmits
+- HOLD → flags to Curtis: "This one needs you personally"
+- REJECT → blocks with logged reason
+
+Veritas exists because Pastoral Presence AI is high-stakes. Curtis's voice, in people's most vulnerable moments, with zero room for hallucination or tone mismatch. Veritas is the safeguard that makes the whole system trustworthy.
 
 ---
 

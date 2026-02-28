@@ -69,6 +69,43 @@
 
 ---
 
+## TERMIUS — Secure SSH Access to J5 VM
+**Why:** Cleaner than Terminal, works on Mac and iPhone, no API keys in chat
+**Download:** termius.com or Mac App Store (free tier)
+**Setup:**
+1. Create account with personal credentials (safe, reputable app)
+2. Set local encryption password → save in Dashlane "J5 Services"
+3. Skip the import screen
+4. Add new host — Tailscale auto-discovers the VM
+5. Username: `j5` → Continue & Save
+6. Connect — you're in at `j5@J5s-Virtual-Machine ~ %`
+
+**To add API keys securely:**
+```bash
+nano ~/.openclaw/.env
+```
+Add line: `KEY_NAME=your-key-here`
+Ctrl+O → Enter → Ctrl+X
+
+**Connected machines via Tailscale:**
+- J5 VM: 100.67.220.8 (username: j5)
+- MacBook Pro: 100.72.177.86
+- Mac Mini: curtiss-mac-mini
+- iPhone: curtis-iphone
+- iPad: ipad-9th-gen-wifi
+
+---
+
+## MAC AUTOMATION & PRODUCTIVITY
+- **Keyboard Maestro** — Mac automation, macro triggers, complex workflows
+- **Raycast** — launcher, quick actions, extensions (replaces Spotlight)
+- **Hazel** — file automation, folder watching, routing rules
+- **Dropover** — drag and drop shelf for files
+- **CleanShot X** — screen capture, annotations, scrolling screenshots
+
+These are all on Curtis's Mac. Hazel is the key bridge between Mac filesystem and J5 brain folder.
+Keyboard Maestro + Raycast can trigger J5 workflows from Mac directly (future integration target).
+
 ## NOTES
 - Asana is NOT in Curtis's stack — Todoist is the task manager
 - Outlook is being phased out in favor of Gmail

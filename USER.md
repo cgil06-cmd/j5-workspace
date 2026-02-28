@@ -50,6 +50,13 @@ Mon=Sabbath | Tue=Admin | Wed=Sermon Prep | Thu=People | Fri=Completion | Sat=Pr
 
 Peak creative: 4:00–9:00 AM. Deep work mornings. Afternoon: lower energy, meetings/pastoral. Evening: family.
 
+## Daily Rhythm Notes
+- 4:00-4:30 AM wake — peak creative and strategic thinking
+- Morning = best time for tasks he doesn't like (communication, hard decisions)
+- With J5, communication can shift later in the day — J5 handles the heavy lifting
+- Lots of thoughts at 4 AM including texts he wants to send to people — J5 needs to be able to SCHEDULE these for appropriate send times (not 4 AM)
+- Scheduled texts are a critical workflow: Curtis composes at 4 AM, J5 queues for 8 AM or appropriate time
+
 ## Communication Preferences
 
 Direct but warm. Pastoral. Hates bureaucracy.

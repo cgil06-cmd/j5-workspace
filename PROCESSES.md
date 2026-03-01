@@ -85,6 +85,20 @@ chmod 600 ~/.openclaw/.env
 
 ---
 
+## J5 IS DOWN — RECOVERY CHECKLIST
+If J5 stops responding via Telegram:
+
+1. SSH into VM via Termius
+2. Run: `openclaw gateway status` — look for "loaded · running"
+3. If down: `openclaw gateway install` then `openclaw gateway start`
+4. Verify: `openclaw status`
+5. Watch live: `openclaw logs --follow`
+6. Deep test: `openclaw status --deep`
+
+Token warning: Session fills up over time. OpenClaw auto-compacts (summarizes + continues). Gaps during compaction are normal — not a crash.
+
+---
+
 ## SKILL SECURITY PROTOCOL — Before Any Install
 
 Every skill goes through this before it touches the system. No exceptions.

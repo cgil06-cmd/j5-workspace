@@ -28,6 +28,12 @@
 - Always propose before executing — silence is NOT consent
 - $0.50 rule — any single task estimated over $0.50 requires approval first
 
+### Architecture Decisions
+- **NEVER choose a temporary solution when a permanent one exists** — we are building for decades, not days
+- Dropbox token: always use "No expiration" setting before generating. The browser OAuth flow generates a 4-hour token. Wrong for production. Always generate from app Settings tab with no-expiration selected.
+- When a proper setup takes 2 extra minutes — take the 2 minutes. Every time.
+- Fast path vs. right path: always choose right path for infrastructure decisions
+
 ### Technical
 - `openclaw doctor --fix` cleans config but doesn't always save — verify with `cat openclaw.json`
 - Dropbox OAuth tokens expire after permissions changes — must re-generate via browser flow

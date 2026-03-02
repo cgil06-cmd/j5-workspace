@@ -277,3 +277,68 @@ These skills are installed and ready. Use them. Don't forget they exist.
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+---
+
+## Infrastructure Built (as of 2026-03-01)
+Any agent reading this: this is what exists. Build on it, don't rebuild it.
+
+### Authentication & Integrations
+- **gog (gogcli)** — Google Workspace CLI, authenticated for both accounts
+  - cgil06@gmail.com — Calendar, Gmail, Drive, Contacts, Tasks, People
+  - cgilbert@ourgardencity.com — Calendar, Gmail, Drive, Contacts, Tasks, People
+  - Keyring: file-based (`GOG_KEYRING_BACKEND=file`, `GOG_KEYRING_PASSPHRASE=""`)
+  - Binary: `/opt/homebrew/bin/gog`
+- **Todoist** — API key in `~/.openclaw/.env` as `TODOIST_API_KEY`
+  - API endpoint: `https://api.todoist.com/api/v1/`
+  - 50 tasks live
+- **GitHub** — workspace repo at `https://github.com/cgil06-cmd/j5-workspace`
+  - Auto-syncs hourly via cron
+
+### Running Services
+- **CLAWdeck** — `http://100.67.220.8:3000` (kanban for agent tasks)
+- **PostgreSQL 15** — running via brew services
+- **OpenClaw Gateway** — always on, LaunchAgent installed
+
+### Cron Jobs
+| ID | Name | Schedule | Purpose |
+|---|---|---|---|
+| d22acec7 | morning-brief | 4:30 AM Tue-Sun | Daily brief with calendar |
+| 8810569b | sabbath-brief | 6:30 AM Mon | Sabbath blessing only |
+| c616d32a | cost-alert | 9:00 AM Tue-Sun | Daily cost check |
+| d158d35a | cai-colace | 7:00 PM daily | Cai medication reminder |
+| 6d24bfd2 | sentinel-nightly | 3:00 AM daily | Security audit |
+| 3b53849a | memory-consolidation | 2:00 AM daily | Daily notes → memory |
+
+### File Structure (PARA)
+```
+workspace/
+├── SOUL.md              — Who J5 is. Read every session.
+├── AGENTS.md            — This file. Agent operating manual.
+├── USER.md              — Who Curtis is.
+├── MEMORY.md            — Long-term memory (main session only)
+├── REFINERY.md          — Content processing workflow
+├── J5_BUILD_ROADMAP.md  — 30-day Matthew B parity plan
+├── memory/              — Daily notes + SQLite DB
+├── brain/
+│   ├── inspiration/     — Refinery outputs (Ross Harkness, etc.)
+│   ├── ff/              — Flawed & Flourishing content pipeline
+│   ├── areas/           — (to build) Ongoing responsibilities
+│   ├── projects/        — (to build) Active outcomes
+│   ├── resources/       — (to build) Reference material
+│   └── archives/        — (to build) Inactive items
+├── skills/
+│   └── deep-dive-analysis/  — Opus research skill
+├── crons/               — Cron job specs
+└── backups/             — Hourly DB backups
+```
+
+### Operating Frameworks (Non-Negotiable)
+- **PARA** — all file/knowledge organization
+- **GTD** — all task management and action routing
+- **Matthew B Standard** — check MATTHEW_B_REFERENCE.md before building anything
+
+### Known Issues (fix Tuesday)
+- Morning brief calendar data not reaching OpenClaw session (gog auth bridge needed)
+- Telegram delivery from isolated cron sessions unreliable — use main session
+- PARA folder structure partially built — areas/projects/resources/archives need population

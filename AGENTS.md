@@ -257,6 +257,23 @@ Always propose → wait for approval → then execute. Silence is NOT consent.
 
 **$0.50 rule:** Any single task estimated over $0.50 in API cost requires Curtis to approve before running.
 
+## Skills Registry
+These skills are installed and ready. Use them. Don't forget they exist.
+
+| Skill | Invoke | Best For | Model |
+|-------|--------|----------|-------|
+| `deep-dive-analysis` | `/deep-dive-analysis on [topic/person]` | Full research + Curtis synthesis via The Refinery | **Opus** (est. $0.30-0.80/run) |
+| `summarize` | `/summarize [url or file]` | Quick extract from URLs, podcasts, YouTube | Haiku |
+| `weather` | `/weather [location]` | Current weather + forecast | Haiku |
+| `todoist` | `/todoist [action]` | Task management | Haiku |
+| `nano-pdf` | `/nano-pdf [instruction]` | Edit PDFs with natural language | Sonnet |
+| `openai-whisper-api` | `/transcribe [file]` | Transcribe audio files | Haiku |
+
+**Adding a new skill?** Install it, then add a row here immediately.
+**The Refinery** uses `deep-dive-analysis` as its Phase 2 research engine automatically.
+
+---
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.

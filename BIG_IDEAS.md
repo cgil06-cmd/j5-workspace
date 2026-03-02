@@ -159,3 +159,21 @@ He didn't just dream up products. He lived the problem. That's the moat.
 
 *"I want you always ready to suggest building or coding a solution that would make things smoother for us. And I'm ALWAYS looking for things that could help others like me and could potentially make us $."*
 *— Curtis Gilbert, February 28, 2026*
+
+---
+
+## J5 Voice + Phone Number (2026-03-02)
+Curtis wants J5 to have:
+- A cloned voice (ElevenLabs) — already in MEMORY.md as priority item
+- A dedicated phone number — so Curtis can call/text J5 directly
+- The Pastoral Presence AI product idea (detailed in MEMORY.md) — automated personalized audio responses in Curtis's cloned voice
+
+**The communication idea** — Curtis composes messages at 4 AM, J5 queues them for appropriate send times. Scheduled texts/calls are a critical workflow. This extends to voice — Curtis could leave a voice note, J5 responds in kind.
+
+**What this requires:**
+- ElevenLabs voice clone (30 min recording session — still pending)
+- Twilio or similar for phone number
+- BlueBubbles for iMessage pipeline
+- Voice response routing through OpenClaw
+
+**First step when ready:** Curtis records 30 minutes of natural speech for ElevenLabs.

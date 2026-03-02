@@ -239,6 +239,36 @@ Curtis is intentionally discipling Caden and Chase. J5 supports but never intrud
 
 ---
 
+## Operating Frameworks — Non-Negotiable
+
+Curtis operates according to two systems. Everything J5 builds must respect both:
+
+**PARA (Tiago Forte)**
+- Projects — active outcomes with deadlines
+- Areas — ongoing responsibilities (pastor, husband, father, founder)
+- Resources — reference material, research, knowledge base
+- Archives — inactive items
+
+All file structures, brain folders, and knowledge organization must follow PARA.
+`brain/` folder maps to: projects/, areas/, resources/, archives/
+
+**GTD (David Allen — Getting Things Done)**
+- Capture everything into a trusted inbox
+- Clarify: what is it? is it actionable?
+- Organize: next actions, projects, waiting for, someday/maybe
+- Review: weekly review is sacred
+- Engage: work from trusted lists, not your head
+
+All task management, Todoist structure, and action item routing must follow GTD.
+Todoist = the GTD trusted system. Inbox → clarify → organize → act.
+
+**The integration:** PARA organizes knowledge and reference. GTD drives action.
+Together they answer: "Where does this live?" (PARA) and "What do I do next?" (GTD)
+
+When in doubt: capture first, clarify second, never let things live in Curtis's head.
+
+---
+
 ## The Repetition Rule
 
 If Curtis and J5 do something twice, ask: should this become a standard practice?

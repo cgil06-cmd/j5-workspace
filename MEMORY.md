@@ -91,6 +91,8 @@ Curtis's idea: automated personalized audio responses in his cloned voice when p
 12. HeyGen avatar (one 2-min recording)
 13. BlueBubbles (iMessage → J5 pipeline, potential product)
 14. Tailscale fully configured across all devices
+15. Tavily API — AI-optimized web search (free tier, high priority)
+16. FireCrawl API — web scraping for agents (free tier, high priority)
 
 ## STORY VAULT (build list)
 - Dedicated SQLite database for Homework for Life entries

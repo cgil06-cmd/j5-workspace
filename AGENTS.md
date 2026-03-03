@@ -268,6 +268,7 @@ These skills are installed and ready. Use them. Don't forget they exist.
 | `todoist` | `/todoist [action]` | Task management | Haiku |
 | `nano-pdf` | `/nano-pdf [instruction]` | Edit PDFs with natural language | Sonnet |
 | `openai-whisper-api` | `/transcribe [file]` | Transcribe audio files | Haiku |
+| `horizon` | `/intake [url or idea]` | Idea Intelligence Officer — 7-lens analysis + weekly synthesis | Haiku |
 
 **Adding a new skill?** Install it, then add a row here immediately.
 **The Refinery** uses `deep-dive-analysis` as its Phase 2 research engine automatically.

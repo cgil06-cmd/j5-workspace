@@ -30,6 +30,16 @@
 - **Gmail** — multiple accounts, active (phasing out Outlook)
 - **Telegram** — J5 personal interface
 
+## DROPBOX (CONNECTED — DO NOT FORGET)
+- **Access:** Full API access via refresh token — already authenticated
+- **Credentials in .env:** `DROPBOX_REFRESH_TOKEN`, `DROPBOX_APP_KEY`, `DROPBOX_APP_SECRET`
+- **Key folder:** `/J5 Audio Intake` — audio recordings, voicemails, meeting files
+- **Other folders:** `1 PROJECTS`, `2 AREAS`, `3 RESOURCES`, `4 ARCHIVE` (PARA structure)
+- **How to get a token:** `curl -s -X POST https://api.dropboxapi.com/oauth2/token -d "grant_type=refresh_token" -d "refresh_token=$DROPBOX_REFRESH_TOKEN" -d "client_id=$DROPBOX_APP_KEY" -d "client_secret=$DROPBOX_APP_SECRET"`
+- **How to list a folder:** POST to `https://api.dropboxapi.com/2/files/list_folder` with `{"path": "/J5 Audio Intake"}`
+- **How to download a file:** POST to `https://content.dropboxapi.com/2/files/download` with `Dropbox-API-Arg` header
+- ⚠️ CHECK THIS FIRST before asking Curtis for Dropbox access or setup help
+
 ## FINANCIAL (SENSITIVE)
 - **YNAB** — financial tracking, active
   ⚠️ When connected: J5 will see budget categories, account balances, transactions, spending patterns

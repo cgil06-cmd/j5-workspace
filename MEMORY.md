@@ -67,6 +67,17 @@ Curtis's idea: automated personalized audio responses in his cloned voice when p
 - AI education opportunity identified as potentially separate brand (Pastoral.ai / Mission AI)
 - YouTube video reference: "How I use Claude CoWork to build a 500k business model" — needs full analysis
 
+## EXISTING INTEGRATIONS (CHECK BEFORE ASKING CURTIS)
+Before asking Curtis to set anything up, check `.env` and `TOOLS.md` first. Known live integrations:
+- **Dropbox** — `DROPBOX_REFRESH_TOKEN` + `DROPBOX_APP_KEY` + `DROPBOX_APP_SECRET` in .env. `/J5 Audio Intake` folder has audio files. Full API access. DO NOT ask Curtis for this again.
+- **Todoist** — `TODOIST_API_KEY` in .env
+- **Deepgram** — `DEEPGRAM_API_KEY` in .env
+- **Groq** — `GROQ_API_KEY` in .env (added 2026-03-03)
+- **Slack** — `SLACK_BOT_TOKEN` in .env, Compass_J5 bot
+- **Google (gog)** — cgil06@gmail.com + cgilbert@ourgardencity.com, authenticated
+- **Anthropic** — `ANTHROPIC_API_KEY` in .env
+- **GitHub** — cgil06-cmd, workspace repo
+
 ## WHAT'S BUILT
 - Foundation files: SOUL.md, AGENTS.md, USER.md, IDENTITY.md, TOOLS.md, MEMORY.md
 - Matthew B reference architecture saved

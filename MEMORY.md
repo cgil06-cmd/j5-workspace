@@ -1,5 +1,5 @@
 # MEMORY.md — J5 Long-Term Memory
-## Last Updated: 2026-03-02
+## Last Updated: 2026-03-03
 
 ---
 
@@ -48,7 +48,7 @@ That's the mission. Everything else is in service of that.
 - **Maven** — Personal Brand Manager (YouTube, Substack, social — starts when calendar is cleared)
 
 ## FULL TOOL STACK
-Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, phasing out Outlook), Slack (staff/Natalie), YNAB, Hazel, TurboScribe, Just Press Record, Telegram, OpenClaw, Claude, NotebookLM, Gemini, Perplexity, Grok, ChatGPT, Manus AI. Deepgram wanted.
+Drafts, Bear, DEVONthink, Todoist, Reclaim.ai, Google Drive, Gmail (multiple, phasing out Outlook), Slack (staff/Natalie — Compass_J5 bot live), Asana (GardenCity Church staff projects — read-only), YNAB, Hazel, TurboScribe, Just Press Record, Telegram, OpenClaw, Claude, NotebookLM, Gemini, Perplexity, Grok, ChatGPT, Manus AI. Groq replacing Deepgram (free transcription).
 
 ## STAFF (GardenCity Church)
 - Natalie — Executive Director of Ministries, primary operational partner
@@ -89,26 +89,40 @@ Curtis's idea: automated personalized audio responses in his cloned voice when p
   - Brave browser installed on VM for browser automation
   - PostgreSQL 15 running (brew services)
   - rbenv fixed, loads automatically via .zshrc
+- **As of 2026-03-02 (Sabbath build day — significant):**
+  - OpenClaw updated to 2026.3.1 ✅
+  - Slack connected — Compass_J5 bot @ ourgardencitychurch.slack.com; token in .env as SLACK_BOT_TOKEN; #j5-command-center (C0AJY9BV524)
+  - Asana connected — GardenCity Church workspace (ID: 42964299887350); Asana = Natalie/staff tool (read-only for J5), Todoist = Curtis's personal GTD
+  - iCal fetch script built: /Users/j5/.openclaw/workspace/ical-fetch.py
+  - Personal + GCC iCal URLs in .env (ICAL_PERSONAL, ICAL_GCC); F&F iCal skipped for now
+  - Morning brief fully wired with live calendar + Todoist — fires 5:30 AM Tue-Sun ✅ (P0 COMPLETE)
+  - EOW Review cron — fires Thu 2 PM → Slack ✅
+  - Week Preview cron — fires Sun 8 PM → Slack ✅ (moved from Mon 7 AM to protect Sabbath)
+  - Manus AI technical brief saved to brain/resources/
+  - Video research: Groq free transcription (replace Deepgram), Versal Labs agent browser (implement with Scribe/Catalyst)
+  - Pastoral care audio messages transcribed — not logged, not stored (sacred boundary maintained ✅)
 
-## WHAT'S NEXT (updated 2026-03-02)
-1. ~~OpenRouter API key~~ ✅ | ~~Google Calendar connection~~ ✅ | ~~Morning brief cron~~ ✅ | ~~Todoist integration~~ ✅
-2. Fix morning brief Telegram delivery (generates correctly, delivery still being debugged)
-3. Gmail triage — urgent email detection
-4. People/CRM database — seed with key contacts
-5. Telegram topics setup
-6. Meeting prep skill
-7. Scribe agent — sermon simmer tracker
-8. Story vault prompt skill
-9. Slack activation
-10. YNAB connection (flag sensitive data first)
-11. SQLite databases (CRM, knowledge base, cost tracking, story vault)
-12. Backup system (Atlas)
-13. fal.ai for image generation
-14. ElevenLabs voice clone (one recording session)
-15. HeyGen avatar (one 2-min recording)
-16. BlueBubbles (iMessage → J5 pipeline, potential product)
-17. Tavily API — AI-optimized web search (free tier, high priority)
-18. FireCrawl API — web scraping for agents (free tier, high priority)
+## WHAT'S NEXT (updated 2026-03-03)
+1. ~~OpenRouter API key~~ ✅ | ~~Google Calendar connection~~ ✅ | ~~Morning brief cron~~ ✅ | ~~Todoist integration~~ ✅ | ~~Slack~~ ✅ | ~~Asana~~ ✅ | ~~iCal wiring~~ ✅
+2. Shepherd agent — relational CRM (Curtis approved, build next)
+3. Scribe agent — sermon simmer tracker + meeting prep/extraction
+4. Groq transcription — replace Deepgram (free, same quality) — need API key from Curtis
+5. Versal Labs agent browser — install when building Scribe or Catalyst
+6. Gmail triage — urgent email detection
+7. Telegram topics — organize output by type
+8. YNAB connection (flag sensitive data first)
+9. SQLite databases (CRM, knowledge base, cost tracking, story vault)
+10. ElevenLabs voice clone (one 30-min recording session from Curtis)
+11. HeyGen avatar (one 2-min recording)
+12. BlueBubbles (iMessage → J5 pipeline, potential product)
+13. Tavily API — AI-optimized web search (free tier, high priority)
+14. FireCrawl API — web scraping for agents (free tier, high priority)
+
+## PENDING FROM CURTIS
+- F&F iCal URL (optional — skip if not easy)
+- Groq API key (for transcription pipeline)
+- BlueBubbles setup on Mac (for iMessage pipeline)
+- 30-min voice recording session (ElevenLabs clone)
 
 ## STORY VAULT (build list)
 - Dedicated SQLite database for Homework for Life entries
@@ -139,14 +153,19 @@ Curtis's idea: automated personalized audio responses in his cloned voice when p
 8. If we do something twice, propose it as a standard (now in SOUL.md)
 9. Curtis's analysis standard: deep-dive required. Surface level is not acceptable. Go beyond. Wow.
 
-## WEEK CONTEXT (week of 2026-03-02)
-- Monday (Sabbath): Breakfast with Chase, prayer for Caden
-- Tuesday: Deep Work, Comm Triage, Service Experience, Curtis/Natalie 1PM meeting
-- Wednesday: Sermon prep — drive rhythm in morning
-- Thursday: People/pastoral day
-- Saturday: Marching Band + Caden basketball (story vault moment)
+## WEEK CONTEXT (week of 2026-03-03)
+- Tuesday: Deep Work, Comm Triage, Service Experience. First real morning brief fires 5:30 AM ✅
+- Tuesday 1 PM: Tracey/Nat/Curtis — Pastoral Care meeting (not just Natalie)
+- Wednesday: Jeremy Wood breakfast 7 AM (not on calendar — personal friend/BFF). Sermon prep AM. Marching Band 5:30 PM + Caden basketball 7:30 PM
+- Thursday: Taylor Kreck meeting 1:30 PM (credentialing + future). Todoist task: ask Matt (banker) about church board meeting
+- Saturday: Marching Band + basketball (story vault potential)
 - Sunday: GCC Church Service, HS Gathering
-- Todoist task live: "Ask Matt (banker) about availability to meet with church board" — Thursday
+
+## PEOPLE NOTES
+- Jeremy Wood = Curtis's BFF. Occasional Wednesday 7 AM breakfast rhythm (before deep work).
+- Taylor Kreck = Thursday 1:30 PM — credentialing + future (context TBD)
+- Matt = Curtis's banker — pending ask about meeting with church board (Thursday task)
+- Tracey = included in Curtis/Natalie pastoral care meetings on Tuesdays
 
 ## THINGS TO REMEMBER
 - Curtis is new to this. Be patient, be clear, never condescending.

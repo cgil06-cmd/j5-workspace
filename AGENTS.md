@@ -129,6 +129,9 @@ Skills provide your tools. When you need one, check its `SKILL.md`. Keep local n
 
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
+**📄 Document Formatting Standard:**
+Any report, debrief, sermon notes, meeting summary, or structured document → **run through Manus before final delivery**. Manus has the best formatting and printing options. This is the last step, every time.
+
 **📝 Platform Formatting:**
 
 - **Discord/WhatsApp/Telegram:** No markdown tables or Unicode box-drawing characters! Use bullet lists instead

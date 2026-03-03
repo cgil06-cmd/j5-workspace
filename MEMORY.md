@@ -142,6 +142,15 @@ Curtis's idea: automated personalized audio responses in his cloned voice when p
 - Caden: 13, faith + sports formation priority
 - Cai: 3, floor time and wonder
 
+## FORMATTING STANDARD (non-negotiable)
+**Manus gets every report, debrief, sermon notes, or structured document before it's final.**
+Manus has the best formatting and printing options. This is the last step before any document is delivered.
+- Service debriefs ✅
+- Meeting summaries ✅
+- Sermon notes ✅
+- Any report or structured output ✅
+Run through Manus → then deliver to Curtis.
+
 ## CORRECTIONS RECEIVED (do not repeat these mistakes)
 1. Never ask bare questions — always propose with recommendation
 2. Don't defer security/cost to later phases — Day 1 items

@@ -72,6 +72,22 @@ def mark_processed(name):
     processed.add(name)
     PROCESSED_LOG.write_text(json.dumps(list(processed)))
 
+# ── Audio conversion ──────────────────────────────────────────────────────
+def convert_to_mp3(audio_path):
+    """Convert any audio file to mp3 using ffmpeg. Returns (mp3_path, was_converted)."""
+    audio_path = Path(audio_path)
+    if audio_path.suffix.lower() == ".mp3":
+        return audio_path, False
+    mp3_path = audio_path.with_suffix(".mp3")
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-i", str(audio_path), "-ac", "1", "-ar", "16000",
+         "-ab", "64k", str(mp3_path)],
+        capture_output=True, timeout=120
+    )
+    if result.returncode != 0:
+        return audio_path, False  # fall back to original
+    return mp3_path, True
+
 # ── Transcription ──────────────────────────────────────────────────────────
 def transcribe_deepgram(audio_path):
     key = os.environ.get("DEEPGRAM_API_KEY")
@@ -250,16 +266,25 @@ def main():
         print(f"   Downloading...")
         download_file(token, f"{INTAKE_FOLDER}/{name}", local_path)
 
+        # Convert to mp3 if needed (caf, ogg, etc. not accepted by APIs)
+        transcribe_path, was_converted = convert_to_mp3(local_path)
+        if was_converted:
+            print(f"   Converted to mp3 for transcription...")
+
         # Transcribe with both services
         print(f"   Transcribing with Deepgram...")
-        transcript_deepgram, err_dg = transcribe_deepgram(local_path)
+        transcript_deepgram, err_dg = transcribe_deepgram(transcribe_path)
         if err_dg:
             print(f"   ⚠️  Deepgram: {err_dg}")
 
         print(f"   Transcribing with Groq...")
-        transcript_groq, err_groq = transcribe_groq(local_path)
+        transcript_groq, err_groq = transcribe_groq(transcribe_path)
         if err_groq:
             print(f"   ⚠️  Groq: {err_groq}")
+
+        # Clean up converted mp3 if we created one
+        if was_converted and transcribe_path.exists():
+            transcribe_path.unlink()
 
         # Use best transcript (prefer Deepgram, fall back to Groq)
         best_transcript = transcript_deepgram or transcript_groq

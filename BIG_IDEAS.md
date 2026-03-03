@@ -177,3 +177,9 @@ Curtis wants J5 to have:
 - Voice response routing through OpenClaw
 
 **First step when ready:** Curtis records 30 minutes of natural speech for ElevenLabs.
+
+## Privacy.com & Google Voice — Check Status (flagged 2026-03-03)
+- **Privacy.com** — virtual cards for agent/subscription spend, check if active and usable for J5 services
+- **Google Voice number** — for J5's dedicated phone number (ties into voice clone + iMessage pipeline)
+- Both feed the "J5 gets a voice and phone number" build
+- Reminder flagged by Curtis — surface at EOD or Thursday

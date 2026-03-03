@@ -30,10 +30,35 @@ python3 {baseDir}/scripts/init-db.py
 # Run relationship health check
 python3 {baseDir}/scripts/check-relationships.py
 
-# Log a touchpoint
+# Log a touchpoint (quick)
 python3 {baseDir}/scripts/log-touchpoint.py "Natalie" "meeting" "1:1 Tuesday"
 python3 {baseDir}/scripts/log-touchpoint.py "Jeremy" "in-person" "Breakfast Wed 7AM"
 ```
+
+## Scribe — Meeting Agent
+
+Three scripts for pre/post meeting intelligence. All use stdlib only.
+
+```bash
+# Pre-meeting brief: pulls Shepherd history + Asana + Todoist
+python3 {baseDir}/scripts/pre-meeting.py "Natalie"
+python3 {baseDir}/scripts/pre-meeting.py "Jeremy Wood"
+
+# Post-meeting: transcript → action items + Todoist tasks + Shepherd log + PARA note
+python3 {baseDir}/scripts/post-meeting.py meeting-notes.txt
+cat transcript.txt | python3 {baseDir}/scripts/post-meeting.py -
+
+# Log meeting: quick touchpoint log + optional follow-up task
+python3 {baseDir}/scripts/log-meeting.py "Natalie" 1-1 "Discussed Q2 staffing"
+python3 {baseDir}/scripts/log-meeting.py "Jeremy Wood" in-person "Breakfast" --followup "Pray for Jeremy's transition" --due "next week"
+```
+
+### Scribe Behavior
+- **pre-meeting.py**: Shepherd touchpoints + Asana task search + Todoist task search → formatted brief
+- **post-meeting.py**: Claude Haiku extracts action items/decisions/quotes; falls back to heuristic if API unavailable; creates Todoist tasks for Curtis's items; logs touchpoints; saves PARA note to ~/brain/projects/ or ~/brain/areas/
+- **log-meeting.py**: Direct touchpoint log with optional Todoist follow-up (GTD next action framing)
+- All keys loaded from `~/.openclaw/.env`
+- Todoist API: `https://api.todoist.com/api/v1/tasks` (returns `{"results": [...], "next_cursor": ...}`)
 
 ## Care Frequencies
 - Family: every 7 days (Shelly, kids)

@@ -47,6 +47,57 @@ def summarize_resource(resource, env):
             pass
     return None
 
+
+def analyze_with_gemini(content, resource, env):
+    """Fallback: Gemini Flash when Anthropic is overloaded."""
+    import urllib.request, urllib.parse, json
+    api_key = env.get('GEMINI_API_KEY', '')
+    if not api_key:
+        return None
+    
+    prompt = f"""You are Horizon, J5s Idea Intelligence Officer for Curtis Gilbert (Lead Pastor + Founder).
+His systems: J5 AI agent, Shepherd CRM, Scribe meeting agent, Todoist GTD, PARA files, Flawed & Flourishing brand.
+
+RESOURCE: {resource}
+CONTENT: {content[:3000]}
+
+Analyze through 7 lenses. Be specific, connect to Curtis's real life and systems.
+
+## 1. WHAT IS THIS?
+3-sentence essence.
+
+## 2. WHAT CAN WE LEARN?
+Top 3 principles/tactics ranked by actionability.
+
+## 3. J5 SYSTEM RELEVANCE
+Which agent/script/workflow does this directly inform?
+
+## 4. IMMEDIATE ACTION
+Implement THIS WEEK? If yes: exact Todoist task title. If no: why.
+
+## 5. LONG-TERM SIGNAL
+Changes anything 6+ months out? What and how?
+
+## 6. F&F ANGLE
+Specific content idea, course angle, or product concept.
+
+## 7. CURTIS FORMATION ANGLE
+Who is he becoming? Most important lens.
+
+## VERDICT
+One sentence: implement now / file for later / skip. Why."""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
+    body = json.dumps({"contents": [{"parts": [{"text": prompt}]}]}).encode()
+    req = urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read())
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        return f"Gemini analysis error: {e}"
+
+
 def analyze_with_claude(content, resource, env):
     """Run the 7-lens Horizon analysis via Anthropic API."""
     api_key = env.get('ANTHROPIC_API_KEY', '')
@@ -207,6 +258,9 @@ def main():
 
     print("🧠 Running 7-lens analysis...")
     analysis = analyze_with_claude(content or resource, resource, env)
+    if not analysis or 'error' in analysis.lower()[:20]:
+        print("⚠️  Anthropic unavailable — falling back to Gemini...")
+        analysis = analyze_with_gemini(content or resource, resource, env)
     
     if not analysis:
         print("❌ Analysis failed — check ANTHROPIC_API_KEY")

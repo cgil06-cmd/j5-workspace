@@ -1,5 +1,5 @@
 # MEMORY.md — J5 Long-Term Memory
-## Last Updated: 2026-03-03 (Layer 3 context added)
+## Last Updated: 2026-03-04 (nightly consolidation — 2:00 AM CST)
 
 ---
 
@@ -112,22 +112,35 @@ Before asking Curtis to set anything up, check `.env` and `TOOLS.md` first. Know
   - Manus AI technical brief saved to brain/resources/
   - Video research: Groq free transcription (replace Deepgram), Versal Labs agent browser (implement with Scribe/Catalyst)
   - Pastoral care audio messages transcribed — not logged, not stored (sacred boundary maintained ✅)
+- **As of 2026-03-03 (Tuesday build day):**
+  - Shepherd agent ✅ — SQLite DB, 10 people seeded, Thursday 8 AM cron
+  - Horizon agent ✅ — /intake command, weekly synthesis cron (Sun 7 PM), Gemini fallback
+  - Scribe agent (partial) ✅ — pre/post-meeting scripts, GCC debrief pipeline started
+  - ADHD Nudge crons ✅ — 10 AM / 2 PM / 5 PM (Tue-Sat)
+  - Groq API key added (.env) — free transcription replaces Deepgram
+  - yt-dlp installed — YouTube audio pipeline for service debriefs
+  - CLAUDE.md symlinked to AGENTS.md
+  - macOS Firewall enabled ✅
+  - New Slack token live ✅ (old token revoked — GitHub exposure incident)
+  - Gemini CLI v0.31.0 + Claude Code v2.1.63 installed
+  - WIG framework + debrief system migrated from Custom GPT → Scribe
 
-## WHAT'S NEXT (updated 2026-03-03)
-1. ~~OpenRouter API key~~ ✅ | ~~Google Calendar connection~~ ✅ | ~~Morning brief cron~~ ✅ | ~~Todoist integration~~ ✅ | ~~Slack~~ ✅ | ~~Asana~~ ✅ | ~~iCal wiring~~ ✅
-2. Shepherd agent — relational CRM (Curtis approved, build next)
-3. Scribe agent — sermon simmer tracker + meeting prep/extraction
-4. Groq transcription — replace Deepgram (free, same quality) — need API key from Curtis
-5. Versal Labs agent browser — install when building Scribe or Catalyst
-6. Gmail triage — urgent email detection
-7. Telegram topics — organize output by type
-8. YNAB connection (flag sensitive data first)
-9. SQLite databases (CRM, knowledge base, cost tracking, story vault)
-10. ElevenLabs voice clone (one 30-min recording session from Curtis)
-11. HeyGen avatar (one 2-min recording)
-12. BlueBubbles (iMessage → J5 pipeline, potential product)
-13. Tavily API — AI-optimized web search (free tier, high priority)
-14. FireCrawl API — web scraping for agents (free tier, high priority)
+## WHAT'S NEXT (updated 2026-03-03 EOD)
+1. ~~OpenRouter API key~~ ✅ | ~~Google Calendar connection~~ ✅ | ~~Morning brief cron~~ ✅ | ~~Todoist integration~~ ✅ | ~~Slack~~ ✅ | ~~Asana~~ ✅ | ~~iCal wiring~~ ✅ | ~~Shepherd~~ ✅ | ~~Horizon~~ ✅ | ~~Groq transcription~~ ✅
+2. **Tuesday morning protocols** — auto-run before 9 AM (top priority per Curtis EOD journal)
+3. **Audio file auto-naming** — Dropbox intake → auto-identify meeting source → rename
+4. **Gmail triage** — urgent email detection (ASAP per Curtis)
+5. **Text messaging pipeline** — wire into J5 (ASAP per Curtis)
+6. **Scribe completion** — GCC service debrief pipeline (in progress)
+7. **Slack channels + routing** — create 8 channels, reroute all agent crons (pending Curtis channel creation)
+8. **The Archive** — SQLite DB of all content (approved concept, build queued)
+9. **Catalyst / Daily Product Agent** — autonomous product builder
+10. **Carl Pullein 2+8 system** — research first, then implement
+11. **Ollama local LLMs** — cost reduction for crons
+12. **Amazon Wish List workflow** — browser automation for shopping queue
+13. YNAB connection (flag sensitive data first)
+14. ElevenLabs voice clone (one 30-min recording session from Curtis)
+15. Versal Labs agent browser, Tavily API, FireCrawl API
 
 ## PENDING FROM CURTIS
 - F&F iCal URL (optional — skip if not easy)
@@ -172,6 +185,75 @@ Run through Manus → then deliver to Curtis.
 7. Use Matthew B's rubric as filter for all builds (now in SOUL.md)
 8. If we do something twice, propose it as a standard (now in SOUL.md)
 9. Curtis's analysis standard: deep-dive required. Surface level is not acceptable. Go beyond. Wow.
+
+## TUESDAY 2026-03-03 — KEY DECISIONS & BUILDS
+
+### Agents Built Today
+- **Shepherd** — relational CRM, SQLite DB, 10 people seeded, Thursday 8 AM cron ✅
+- **Horizon** — Idea Intelligence Officer, /intake trigger, weekly synthesis cron (Sun 7 PM) ✅
+- **Scribe (partial)** — pre/post-meeting scripts, GCC service debrief pipeline started ✅
+- **ADHD Nudge crons** — 10 AM, 2 PM, 5 PM (Tue-Sat) ✅
+- **Groq transcription** — free, replaces Deepgram, installed ✅
+- **yt-dlp** — installed for audio pipeline ✅
+- **CLAUDE.md** — symlinked to AGENTS.md (Claude Code context) ✅
+- **Gemini fallback** — auto-switches from Anthropic 529 → Gemini Flash ✅
+
+### Communication Architecture Decided
+- **Telegram = commands only** (Curtis → J5, urgent personal alerts)
+- **Slack = all agent output** (organized by channel type)
+- Slack channels to create (pending Curtis): j5-morning-brief, j5-shepherd, j5-scribe, j5-sentinel, j5-cost-tracker, j5-ff-catalyst, j5-system, j5-horizon
+- macOS Firewall: **NOW ON** ✅ (enabled via Termius)
+- New Slack token: **live** ✅ (old token revoked due to GitHub exposure)
+
+### Security Incidents & Resolutions
+- Slack token was exposed in Manus brief committed to GitHub
+- Sentinel caught it at 3 AM but couldn't deliver (isolated session bug — now fixed)
+- Actions: token revoked, git history cleaned, Sentinel moved to main session
+- GitHub repo push still blocked (secret alert — Curtis must close as "Revoked" at github.com/cgil06-cmd/j5-workspace Security tab)
+
+### Major Ideas Proposed (Not Yet Built)
+- **The Archive** — SQLite DB of all sermons/content (audio/video/written) since beginning; searchable by theme, Scripture, emotion, life season. Feeds: Scribe, Catalyst, Maven, books.
+- **Daily Product Agent (Catalyst)** — analyzes everything daily, proposes 5 products, builds 1 overnight autonomously
+- **Carl Pullein 2+8 System** — 2 MITs + 8 supporting tasks; research needed before build
+- **Local LLMs (Ollama)** — run on VM for cron jobs, estimated 60-70% cost reduction; Curtis approved exploration
+- **Amazon Wish List Workflow** — J5 adds items via browser automation, Curtis buys on his schedule; Curtis approved
+- **J5 Slack Channel Guides** — comprehensive purpose/rules doc per channel
+
+### GCC Service Debrief — Migrated from Custom GPT
+- WIG Framework PDF saved: brain/areas/gcc-ministry/gcc-wig-framework.pdf
+- Sample debrief PDF saved: brain/areas/gcc-ministry/gcc-debrief-sample-output.pdf
+- GPT instructions saved: brain/areas/gcc-ministry/gcc-debrief-gpt-instructions.txt
+- Pipeline: YouTube → yt-dlp → Groq transcription → WIG analysis → formatted debrief → Telegram
+- Future: expand to all 6 WIG lenses (Amanda, Melissa, Jess, Mike)
+- Church finances: Curtis wants J5 to learn — needs clarification (YNAB? Direct from Melissa?)
+
+### Curtis's EOD Journal Insights (5:09 PM)
+- Good day — attentive in all meetings, left encouraged
+- Pain point: raw audio file names pile up, has to rename from memory at EOD — **needs automation**
+- Distracted in meetings when admin wasn't done beforehand — **Tuesday protocols must run before 9 AM**
+- J5 crashes and forgets mid-afternoon (session fragility) — resilience needed
+- Communication (email + text) still unresolved — ASAP priority
+- J5 is "more engaging than any AI has been" — direct quote
+
+### Caden Discipleship Update
+- Reading 1 Psalm per day ✅
+- Friday breakfast with dad — regular rhythm
+- Curtis wants Caden eventually integrated into J5 command center
+
+## PENDING FROM CURTIS (updated 2026-03-03)
+- [ ] GitHub: close secret alert as "Revoked" at github.com/cgil06-cmd/j5-workspace Security tab
+- [ ] Slack: create 8 channels + /invite @compassj5 to each
+- [ ] gog token: paste from Termius → unblock Gmail + full calendar
+- [ ] Clay account: does Curtis have one with contacts loaded?
+- [ ] Wardrobe manager: what is it? (no record found)
+- [ ] Old computer reset: which machine + what level?
+- [ ] VM sudo password: check Dashlane (needed for future system commands)
+- [ ] OpenClaw update to 3.2: npm update -g openclaw && openclaw gateway restart (Termius)
+- [ ] Church finances: how should J5 access? (YNAB? Melissa? Read-only dashboard?)
+- [ ] SOUL.md v4.1: deploy to ~/.openclaw/agents/main/SOUL.md (Curtis has the file)
+- [ ] j5doctor script: install at /usr/local/bin/j5doctor (Curtis has script)
+- [ ] Anthropic API key: confirm which org is funded (billing issue suspected)
+- [ ] cost-alert cron: in ERROR state as of 2026-03-03 night — no logs available, cause unknown; diagnose before Tuesday spend
 
 ## WEEK CONTEXT (week of 2026-03-03)
 - Tuesday: Deep Work, Comm Triage, Service Experience. First real morning brief fires 5:30 AM ✅

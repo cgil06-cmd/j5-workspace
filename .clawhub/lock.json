@@ -16,6 +16,10 @@
     "gmail-secretary": {
       "version": "1.0.14",
       "installedAt": 1772583346739
+    },
+    "beeper-api-cli": {
+      "version": "1.0.0",
+      "installedAt": 1772586309598
     }
   }
 }

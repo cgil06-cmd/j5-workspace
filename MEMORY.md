@@ -1,5 +1,5 @@
 # MEMORY.md — J5 Long-Term Memory
-## Last Updated: 2026-03-03
+## Last Updated: 2026-03-03 (Layer 3 context added)
 
 ---
 
@@ -186,6 +186,47 @@ Run through Manus → then deliver to Curtis.
 - Taylor Kreck = Thursday 1:30 PM — credentialing + future (context TBD)
 - Matt = Curtis's banker — pending ask about meeting with church board (Thursday task)
 - Tracey = included in Curtis/Natalie pastoral care meetings on Tuesdays
+
+## INFRASTRUCTURE STATE (Layer 3 context — March 1-3, 2026)
+
+### OpenClaw Config (DO NOT CHANGE without Curtis's approval)
+- contextTokens=120000, compaction.reserveTokens=40000, timeoutSeconds=300
+- These prevent the session compaction death spiral
+- Memory persistence mode should be "hybrid" in openclaw.json (PENDING)
+
+### Gateway
+- LaunchAgent: ai.openclaw.gateway
+- If it goes down: `openclaw gateway install`
+
+### Known Failure Modes
+1. Session bloat → compaction timeout → J5 goes silent → Fix: /new or j5doctor reset
+2. Gateway LaunchAgent unloads → silence → Fix: `openclaw gateway install`
+3. API billing exhausted → error loop → Fix: add credits at console.anthropic.com, restart gateway
+4. Context overflow → "prompt too large" → Fix: same as #1
+
+### Session Health Rule (NON-NEGOTIABLE)
+If conversation gets very long → proactively tell Curtis: "Session is getting long. Want me to save key points and start fresh with /new?" DO NOT wait for a crash.
+
+### Memory Rule
+Every 2-4 hours during active conversation → write important decisions, commitments, config changes to persistent memory. Do NOT rely on compaction.
+
+### Layer 3
+Curtis has a Claude Project at claude.ai = J5's architect and strategic consultant.
+When Curtis says "I discussed this with Claude" or "Layer 3 said" → treat as authoritative.
+
+### Tools Pending Installation
+- **SOUL.md v4.1** — Curtis has the file. Needs to be deployed to `~/.openclaw/agents/main/SOUL.md`
+- **j5doctor** — Curtis has the script. Install at `/usr/local/bin/j5doctor`. Commands: status, fix, restart, reset, billing, logs, memory, compact, cron
+
+### Meeting Intelligence System
+Full blueprint designed (5 phases: Prepare, Capture, Process, Execute, Learn). Curtis has the document. Implementation starts with Phase 1 (manual capture + processing). Scribe scripts are Phase 1.
+
+### Pending Action Items (from Layer 3)
+- [ ] Deploy SOUL.md v4.1 → `~/.openclaw/agents/main/SOUL.md` (Curtis has file)
+- [ ] Install j5doctor on VM + Curtis's Mac (Curtis has script)
+- [ ] Diagnose billing issue (API key may not match funded org)
+- [ ] Set memory persistence mode to "hybrid" in openclaw.json
+- [ ] Run `openclaw doctor --fix` for general health check
 
 ## THINGS TO REMEMBER
 - Curtis is new to this. Be patient, be clear, never condescending.

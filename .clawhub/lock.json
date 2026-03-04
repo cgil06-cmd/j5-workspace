@@ -12,6 +12,10 @@
     "deepgram": {
       "version": "1.0.1",
       "installedAt": 1772299091747
+    },
+    "gmail-secretary": {
+      "version": "1.0.14",
+      "installedAt": 1772583346739
     }
   }
 }

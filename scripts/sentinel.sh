@@ -179,6 +179,26 @@ run_audit() {
     ((FAIL++)); ISSUES+="🟠 Unrecognized skills found: $UNKNOWN_SKILLS\n  Verify each against security protocol\n\n"
   fi
 
+  # 11. Disk usage
+  DISK_PCT=$(df / | awk 'NR==2 {gsub(/%/,"",$5); print $5}')
+  if [ "$DISK_PCT" -ge 80 ]; then
+    ((FAIL++)); ISSUES+="🔴 CRITICAL: Disk ${DISK_PCT}% full — J5 may crash. Clear space immediately.\n\n"
+    log "AUDIT [11] FAIL: Disk ${DISK_PCT}%"
+  elif [ "$DISK_PCT" -ge 70 ]; then
+    ((FAIL++)); ISSUES+="🟠 Disk ${DISK_PCT}% full — getting close. Review logs and session files.\n  Run: openclaw sessions rm --old\n\n"
+    log "AUDIT [11] WARN: Disk ${DISK_PCT}%"
+  else
+    ((PASS++)); log "AUDIT [11] PASS: Disk ${DISK_PCT}% — healthy"
+  fi
+
+  # 12. Tailscale connectivity
+  if tailscale status > /dev/null 2>&1 && ! tailscale status 2>/dev/null | grep -qE "Logged out|stopped|NeedsLogin"; then
+    ((PASS++)); log "AUDIT [12] PASS: Tailscale connected"
+  else
+    ((FAIL++)); ISSUES+="🔴 CRITICAL: Tailscale is down — remote access lost. Reconnect from host Mac.\n\n"
+    log "AUDIT [12] FAIL: Tailscale down"
+  fi
+
   # ─── REPORT ───────────────────────────────────────────────────────────────
 
   DATE=$(date '+%Y-%m-%d %H:%M CST')

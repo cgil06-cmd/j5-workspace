@@ -314,6 +314,25 @@ def main():
         output_dir = save_output(Path(name).stem, transcript_deepgram, transcript_groq, summary)
         print(f"   ✅ Saved to {output_dir}")
 
+        # Hand off to ScribePostMeetingAgent for full pipeline:
+        # DB logging, Shepherd touchpoint update, proper Slack routing via AgentBase
+        try:
+            transcript_path = output_dir / "transcript-deepgram.txt"
+            if not transcript_path.exists():
+                transcript_path = output_dir / "transcript-groq.txt"
+            if transcript_path.exists():
+                post_meeting_script = SCRIPTS_DIR / "post-meeting.py"
+                person = summary.get("people", [None])[0] if summary else None
+                cmd = [sys.executable, str(post_meeting_script), str(transcript_path)]
+                if person:
+                    cmd += ["--person", person]
+                print(f"   🔄 Handing off to Scribe post-meeting agent...")
+                subprocess.run(cmd, check=False, timeout=120)
+            else:
+                print(f"   ⚠️  No transcript file found for Scribe handoff")
+        except Exception as e:
+            print(f"   ⚠️  Scribe handoff failed (non-fatal): {e}")
+
         # Mark processed
         mark_processed(name)
 

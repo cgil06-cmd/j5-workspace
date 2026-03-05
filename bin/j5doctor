@@ -9,6 +9,7 @@ Usage:
   j5doctor --json       Output raw JSON
 """
 import os
+import re
 import sys
 import json
 import socket
@@ -24,6 +25,26 @@ DB_PATH = Path.home() / ".openclaw" / "workspace" / "memory" / "j5.db"
 REGISTRY_PATH = WORKSPACE / "agents" / "registry.json"
 ENV_PATH = Path.home() / ".openclaw" / ".env"
 OPENCLAW_JSON = Path.home() / ".openclaw" / "openclaw.json"
+
+# Cost rates per token
+COST_RATES = {
+    "haiku":  {"input": 0.00025 / 1000, "output": 0.00125 / 1000},
+    "sonnet": {"input": 0.003   / 1000, "output": 0.015   / 1000},
+}
+
+# Registry agent name → OpenClaw cron name
+AGENT_CRON_MAP = {
+    "sentinel":             "sentinel-nightly",
+    "morning-brief":        "morning-brief",
+    "memory-consolidation": "memory-consolidation",
+    "dropbox-sync":         "dropbox-sync",
+    "cost-sentinel":        "cost-sentinel",
+    "shepherd":             "shepherd-check",
+    "scribe":               "service-debrief",
+}
+
+_cron_list_cache = None
+_cron_runs_cache = {}
 
 
 # ── Env loading ────────────────────────────────────────────────────────────
@@ -127,6 +148,100 @@ def check_agent_registry() -> dict:
         return {"name": "Agent registry", "status": "error", "detail": str(e), "count": 0}
 
 
+# ── Cron data helpers ──────────────────────────────────────────────────────
+
+def _model_rates(model: str) -> dict:
+    m = (model or "").lower()
+    if "haiku" in m:
+        return COST_RATES["haiku"]
+    return COST_RATES["sonnet"]
+
+
+def _fetch_cron_list() -> list:
+    global _cron_list_cache
+    if _cron_list_cache is not None:
+        return _cron_list_cache
+    try:
+        r = subprocess.run(
+            ["openclaw", "cron", "list"],
+            capture_output=True, text=True, timeout=15
+        )
+        uuid_re = re.compile(
+            r'^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\s+(\S+)'
+        )
+        crons = []
+        for line in r.stdout.splitlines():
+            m = uuid_re.match(line.strip())
+            if m:
+                crons.append({"id": m.group(1), "name": m.group(2)})
+        _cron_list_cache = crons
+    except Exception:
+        _cron_list_cache = []
+    return _cron_list_cache
+
+
+def _fetch_cron_runs(cron_id: str, limit: int = 10) -> list:
+    key = f"{cron_id}:{limit}"
+    if key in _cron_runs_cache:
+        return _cron_runs_cache[key]
+    try:
+        r = subprocess.run(
+            ["openclaw", "cron", "runs", "--id", cron_id, "--limit", str(limit)],
+            capture_output=True, text=True, timeout=10
+        )
+        raw = r.stdout
+        idx = raw.find("{")
+        data = json.loads(raw[idx:]) if idx >= 0 else {}
+        runs = [e for e in data.get("entries", []) if e.get("action") == "finished"]
+        _cron_runs_cache[key] = runs
+    except Exception:
+        _cron_runs_cache[key] = []
+    return _cron_runs_cache[key]
+
+
+def _run_cost(run: dict) -> float:
+    usage = run.get("usage") or {}
+    inp = usage.get("input_tokens", 0)
+    out = usage.get("output_tokens", 0)
+    if not inp and not out:
+        return 0.0
+    rates = _model_rates(run.get("model", ""))
+    return inp * rates["input"] + out * rates["output"]
+
+
+def _today_start_ms() -> int:
+    now = datetime.now()
+    return int(now.replace(hour=0, minute=0, second=0, microsecond=0).timestamp() * 1000)
+
+
+def _run_time_str(ts_ms: int) -> str:
+    if not ts_ms:
+        return "unknown"
+    dt = datetime.fromtimestamp(ts_ms / 1000)
+    delta = datetime.now() - dt
+    mins = int(delta.total_seconds() / 60)
+    if mins < 60:
+        return f"{mins}m ago"
+    if mins < 1440:
+        return f"{mins // 60}h ago"
+    return f"{delta.days}d ago"
+
+
+def _get_cron_costs_today() -> dict:
+    crons = _fetch_cron_list()
+    if not crons:
+        return {"total": 0.0, "runs": 0}
+    start_ms = _today_start_ms()
+    total = 0.0
+    run_count = 0
+    for cron in crons:
+        for run in _fetch_cron_runs(cron["id"], limit=10):
+            if run.get("ts", 0) >= start_ms:
+                total += _run_cost(run)
+                run_count += 1
+    return {"total": total, "runs": run_count}
+
+
 def check_agent_health() -> list:
     agents = []
     try:
@@ -146,16 +261,17 @@ def check_agent_health() -> list:
     except Exception:
         pass
 
+    # Build cron name → id lookup for fallback
+    cron_name_to_id = {c["name"]: c["id"] for c in _fetch_cron_list()}
+
     for a in registry:
         name = a["name"]
         h = health_map.get(name, {})
         last_run = h.get("last_run")
         last_status = h.get("last_status", "never")
+        source = "db"
 
-        if not last_run:
-            time_str = "never"
-            status = "never"
-        else:
+        if last_run:
             try:
                 dt = datetime.fromisoformat(last_run)
                 delta = datetime.now() - dt
@@ -169,12 +285,33 @@ def check_agent_health() -> list:
             except Exception:
                 time_str = last_run[:16]
             status = last_status
+        else:
+            # Fall back to cron run history
+            cron_name = AGENT_CRON_MAP.get(name)
+            cron_id = cron_name_to_id.get(cron_name) if cron_name else None
+            if cron_id:
+                runs = _fetch_cron_runs(cron_id, limit=1)
+                if runs:
+                    r = runs[0]
+                    time_str = _run_time_str(r.get("ts", 0))
+                    raw_status = r.get("status", "unknown")
+                    status = "success" if raw_status == "ok" else raw_status
+                    source = "cron"
+                else:
+                    time_str = "never"
+                    status = "never"
+                    source = "none"
+            else:
+                time_str = "never"
+                status = "never"
+                source = "none"
 
         agents.append({
             "name": name,
             "time": time_str,
             "status": status,
             "last_status": last_status,
+            "source": source,
         })
 
     return agents
@@ -218,16 +355,38 @@ def check_disk() -> dict:
 
 
 def check_cost_today() -> dict:
+    db_total = 0.0
     try:
         conn = sqlite3.connect(str(DB_PATH))
         c = conn.cursor()
         today = datetime.now().strftime("%Y-%m-%d")
         c.execute("SELECT COALESCE(SUM(cost_usd),0) FROM cost_tracking WHERE date=?", (today,))
-        total = c.fetchone()[0]
+        db_total = c.fetchone()[0]
         conn.close()
-        return {"name": "Cost today", "status": "ok", "detail": f"${total:.4f}", "value": total}
-    except Exception as e:
-        return {"name": "Cost today", "status": "warn", "detail": f"DB unavailable: {e}", "value": 0.0}
+    except Exception:
+        pass
+
+    cron_data = _get_cron_costs_today()
+    cron_total = cron_data.get("total", 0.0)
+    cron_runs = cron_data.get("runs", 0)
+    best = max(db_total, cron_total)
+
+    parts = []
+    if cron_total > 0:
+        parts.append(f"cron: ${cron_total:.4f} ({cron_runs} runs)")
+    if db_total > 0:
+        parts.append(f"j5.db: ${db_total:.4f}")
+    detail = " | ".join(parts) if parts else "$0.00"
+
+    return {
+        "name": "Cost today",
+        "status": "ok",
+        "detail": detail,
+        "value": best,
+        "db_total": db_total,
+        "cron_total": cron_total,
+        "cron_runs": cron_runs,
+    }
 
 
 def check_active_crons() -> dict:
@@ -292,10 +451,12 @@ def build_report(data: dict) -> str:
                            "error" if a["status"] == "error" else "never")
         time_str = a["time"]
         status_str = fmt_agent_status(a["status"])
+        src = a.get("source", "")
+        src_tag = f" [cron]" if src == "cron" else ""
         if time_str == "never":
             lines.append(f"  {icon} {a['name']:<22} never run")
         else:
-            lines.append(f"  {icon} {a['name']:<22} {time_str} · {status_str}")
+            lines.append(f"  {icon} {a['name']:<22} {time_str} · {status_str}{src_tag}")
 
     lines.append("")
 
@@ -310,7 +471,18 @@ def build_report(data: dict) -> str:
     # COSTS
     cost = data["cost"]
     lines.append("COSTS")
-    lines.append(f"  💰 Today: {cost['detail']}")
+    cron_total = cost.get("cron_total", 0.0)
+    cron_runs = cost.get("cron_runs", 0)
+    db_total = cost.get("db_total", 0.0)
+    if cron_total > 0:
+        lines.append(f"  💰 Today (cron sessions): ${cron_total:.4f}  [{cron_runs} runs]")
+    else:
+        lines.append(f"  💰 Today (cron sessions): $0.00  [no data]")
+    if db_total > 0:
+        lines.append(f"  💰 Today (j5.db):         ${db_total:.4f}")
+    best = max(cron_total, db_total)
+    if best > 0:
+        lines.append(f"  💰 Best estimate:          ${best:.4f}")
 
     lines.append("")
 

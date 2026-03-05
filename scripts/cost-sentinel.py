@@ -11,8 +11,10 @@ import json
 import os
 import glob
 import sys
+import sqlite3
 import argparse
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # ─── Config ─────────────────────────────────────────────────────────────────
 
@@ -207,9 +209,35 @@ def main():
 
     print("\n".join(lines))
 
+    # Write aggregate to j5.db cost_tracking
+    _write_cost_to_db(date_label, model_totals, total_cost)
+
     # Exit code 1 if over threshold (for shell scripting / cron awareness)
     if total_cost > threshold:
         sys.exit(1)
+
+
+def _write_cost_to_db(date_label: str, model_totals: dict, total_cost: float):
+    db_path = Path.home() / ".openclaw" / "workspace" / "memory" / "j5.db"
+    try:
+        conn = sqlite3.connect(str(db_path))
+        today = datetime.now().strftime("%Y-%m-%d")
+        total_input = sum(v["input_tokens"] for v in model_totals.values())
+        total_output = sum(v["output_tokens"] for v in model_totals.values())
+        # Remove any existing row for today's aggregate, then insert fresh
+        conn.execute(
+            "DELETE FROM cost_tracking WHERE agent_name=? AND date=?",
+            ("cron-aggregate", today)
+        )
+        conn.execute(
+            "INSERT INTO cost_tracking (agent_name, date, input_tokens, output_tokens, model, cost_usd)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            ("cron-aggregate", today, total_input, total_output, "aggregate", total_cost)
+        )
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"⚠ DB write failed: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

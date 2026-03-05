@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "updated": "2026-03-05",
+  "agents": [
+    {
+      "name": "shepherd",
+      "intent": "Relational CRM — track relationships, health checks, touchpoints, meeting prep",
+      "skills": [
+        "check-relationships",
+        "log-touchpoint",
+        "pre-meeting",
+        "post-meeting",
+        "log-meeting",
+        "gmail-scan",
+        "init-db"
+      ],
+      "skill_count": 7,
+      "slack_channel": "C0AJMV16CSW",
+      "cron": null,
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "skills/shepherd/scripts/check-relationships.py"
+    },
+    {
+      "name": "horizon",
+      "intent": "Idea Intelligence Officer — 7-lens analysis of resources, frameworks, and ideas",
+      "skills": [
+        "intake",
+        "weekly-synthesis",
+        "pending-nudge",
+        "analyze-url",
+        "analyze-text"
+      ],
+      "skill_count": 5,
+      "slack_channel": "C0AK0SFJ9G9",
+      "cron": null,
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "skills/horizon/scripts/intake.py"
+    },
+    {
+      "name": "scribe",
+      "intent": "Meeting intelligence — transcript → GTD action items, Todoist tasks, PARA notes",
+      "skills": [
+        "pre-meeting",
+        "post-meeting",
+        "log-meeting",
+        "audio-to-transcribe",
+        "service-debrief",
+        "dropbox-sync",
+        "gmail-triage"
+      ],
+      "skill_count": 7,
+      "slack_channel": "C0AJMV16CSW",
+      "cron": null,
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "skills/scribe/scripts/post-meeting.py"
+    },
+    {
+      "name": "sentinel",
+      "intent": "Security monitor — nightly audit, Tailscale health, disk, suspicious activity",
+      "skills": [
+        "nightly-audit",
+        "tailscale-check",
+        "disk-check",
+        "process-scan",
+        "env-audit",
+        "alert-on-anomaly"
+      ],
+      "skill_count": 6,
+      "slack_channel": "C0AK0SFJ9G9",
+      "cron": "0 3 * * *",
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "crons/sentinel-nightly.py"
+    },
+    {
+      "name": "cost-sentinel",
+      "intent": "API cost tracking — daily spend alerts, per-agent breakdown, $0.50 rule enforcement",
+      "skills": [
+        "daily-cost-report",
+        "alert-threshold",
+        "per-agent-breakdown",
+        "weekly-summary"
+      ],
+      "skill_count": 4,
+      "slack_channel": "C0AK0SFJ9G9",
+      "cron": "0 9 * * 2-7",
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "crons/cost-alert.py"
+    },
+    {
+      "name": "morning-brief",
+      "intent": "Daily context delivery — calendar, tasks, relationships, weather, priorities",
+      "skills": [
+        "calendar-pull",
+        "task-summary",
+        "relationship-nudges",
+        "brief-compose"
+      ],
+      "skill_count": 4,
+      "slack_channel": "C0AJY9BV524",
+      "cron": "30 4 * * 2-7",
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "crons/morning-brief.py"
+    },
+    {
+      "name": "dropbox-sync",
+      "intent": "Audio intake pipeline — poll Dropbox, trigger transcription, route to Scribe",
+      "skills": [
+        "dropbox-poll",
+        "download-audio",
+        "route-to-scribe"
+      ],
+      "skill_count": 3,
+      "slack_channel": "C0AJMV17GFL",
+      "cron": "*/15 * * * *",
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "skills/scribe/scripts/dropbox-poller.py"
+    },
+    {
+      "name": "memory-consolidation",
+      "intent": "Daily notes consolidation — review memory/YYYY-MM-DD.md files, update MEMORY.md",
+      "skills": [
+        "read-daily-notes",
+        "distill-insights",
+        "update-memory"
+      ],
+      "skill_count": 3,
+      "slack_channel": "C0AJMV17GFL",
+      "cron": "0 2 * * *",
+      "model": "claude-haiku-4-5-20251001",
+      "status": "active",
+      "script": "crons/memory-consolidation.py"
+    }
+  ]
+}

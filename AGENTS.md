@@ -346,3 +346,55 @@ workspace/
 - Morning brief calendar data not reaching OpenClaw session (gog auth bridge needed)
 - Telegram delivery from isolated cron sessions unreliable — use main session
 - PARA folder structure partially built — areas/projects/resources/archives need population
+
+---
+
+## Infrastructure Layer (v1.0) — Built 2026-03-05
+
+Production-grade shared foundation for all J5 agents. Do not rebuild what's already here.
+
+### `lib/` — Shared Python Library
+
+| Module | Purpose |
+|--------|---------|
+| `lib/db.py` | SQLite layer → `~/.openclaw/workspace/memory/j5.db` |
+| `lib/llm.py` | Anthropic API abstraction, auto cost logging |
+| `lib/slack_client.py` | Slack messaging with channel map |
+| `lib/todoist_client.py` | Todoist API v1 client |
+| `lib/agent_base.py` | `AgentBase` class — extend this for every new agent |
+
+**DB Tables:** `agent_runs`, `agent_logs`, `agent_health`, `agent_events`, `shared_memory`, `cost_tracking`
+
+### `agents/` — Agent Registry & Templates
+
+- `agents/registry.json` — single source of truth for all registered agents
+- `agents/template/` — copy this when creating a new agent:
+  - `agent_template.py` — skeleton extending AgentBase
+  - `AGENT.md` — documentation template
+  - `README.md` — 5-step guide to building a new agent
+
+### `bin/j5` — CLI
+
+```bash
+python3 bin/j5 agents          # list all agents + status
+python3 bin/j5 health          # table: agent | last_run | status | cost
+python3 bin/j5 logs <name>     # recent log lines
+python3 bin/j5 run <name>      # invoke agent by name
+python3 bin/j5 cost [--week]   # cost breakdown by agent
+python3 bin/j5 events          # message bus events
+python3 bin/j5 memory get/set  # shared memory KV store
+```
+
+### Agents Using `lib/` (migrated 2026-03-05)
+
+- `skills/horizon/scripts/intake.py` → `HorizonIntakeAgent(AgentBase)`
+- `skills/shepherd/scripts/check-relationships.py` → `ShepherdHealthAgent(AgentBase)`
+- `skills/scribe/scripts/post-meeting.py` → `ScribePostMeetingAgent(AgentBase)`
+
+### Building New Agents
+
+1. Copy `agents/template/agent_template.py` → `agents/<name>/agent.py`
+2. Extend `AgentBase`, implement `execute()`
+3. Fill in `agents/template/AGENT.md`
+4. Add entry to `agents/registry.json`
+5. Test: `python3 bin/j5 run <name>`

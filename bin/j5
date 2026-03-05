@@ -1,0 +1,318 @@
+#!/usr/bin/env python3
+"""
+bin/j5 — J5 Agent Infrastructure CLI
+
+Commands:
+  j5 agents               List all registered agents with health status
+  j5 run <name>           Run an agent by name
+  j5 logs <name> [--n N]  Show recent log lines (default: 20)
+  j5 health               Table: agent | last_run | status | cost_today
+  j5 cost [--week]        Cost breakdown by agent (default: today)
+  j5 events [--agent X]  Recent message bus events
+  j5 memory get <key>     Read shared memory
+  j5 memory set <k> <v>   Write shared memory
+"""
+import sys
+import os
+import json
+import subprocess
+from pathlib import Path
+from datetime import datetime
+
+# Ensure workspace root is on path
+WORKSPACE = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(WORKSPACE))
+
+REGISTRY_PATH = WORKSPACE / "agents" / "registry.json"
+
+
+def load_env():
+    env_path = Path.home() / ".openclaw" / ".env"
+    try:
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, _, v = line.partition("=")
+                os.environ.setdefault(k.strip(), v.strip())
+    except Exception:
+        pass
+
+
+def load_registry() -> list:
+    try:
+        data = json.loads(REGISTRY_PATH.read_text())
+        return data.get("agents", [])
+    except Exception:
+        return []
+
+
+def fmt_time(iso: str) -> str:
+    if not iso:
+        return "never"
+    try:
+        dt = datetime.fromisoformat(iso)
+        delta = datetime.now() - dt
+        mins = int(delta.total_seconds() / 60)
+        if mins < 60:
+            return f"{mins}m ago"
+        hrs = mins // 60
+        if hrs < 24:
+            return f"{hrs}h ago"
+        return f"{delta.days}d ago"
+    except Exception:
+        return iso[:16]
+
+
+def status_icon(status: str) -> str:
+    return {"success": "✅", "error": "❌", "running": "🔄"}.get(status, "⬜")
+
+
+# ── Commands ───────────────────────────────────────────────────────────────
+
+def cmd_agents(args):
+    agents = load_registry()
+    try:
+        from lib.db import get_all_health, init_db
+        init_db()
+        health_rows = {r["agent_name"]: r for r in get_all_health()}
+    except Exception:
+        health_rows = {}
+
+    print(f"\n{'AGENT':<22} {'STATUS':<10} {'LAST RUN':<14} {'RUNS':<6} {'CHANNEL':<22} {'CRON'}")
+    print("─" * 90)
+    for a in agents:
+        h = health_rows.get(a["name"], {})
+        status = h.get("last_status", "—")
+        icon = status_icon(status)
+        last = fmt_time(h.get("last_run", ""))
+        runs = h.get("run_count", 0)
+        cron = a.get("cron") or "manual"
+        chan = a.get("slack_channel", "")[:20]
+        print(f"{a['name']:<22} {icon} {status:<8} {last:<14} {runs:<6} {chan:<22} {cron}")
+
+    print(f"\n{len(agents)} agents registered  |  registry: agents/registry.json")
+
+
+def cmd_run(args):
+    if not args:
+        print("Usage: j5 run <agent-name>")
+        sys.exit(1)
+    name = args[0]
+    agents = load_registry()
+    agent = next((a for a in agents if a["name"] == name), None)
+    if not agent:
+        print(f"⚠ Agent '{name}' not found in registry.")
+        sys.exit(1)
+    script = WORKSPACE / agent["script"]
+    if not script.exists():
+        print(f"⚠ Script not found: {script}")
+        sys.exit(1)
+    print(f"▶ Running {name} → {agent['script']}")
+    result = subprocess.run(["python3", str(script)], cwd=str(WORKSPACE))
+    sys.exit(result.returncode)
+
+
+def cmd_logs(args):
+    if not args:
+        print("Usage: j5 logs <agent-name> [--n N]")
+        sys.exit(1)
+    name = args[0]
+    limit = 20
+    if "--n" in args:
+        idx = args.index("--n")
+        try:
+            limit = int(args[idx + 1])
+        except Exception:
+            pass
+
+    try:
+        from lib.db import get_recent_logs, init_db
+        init_db()
+        rows = get_recent_logs(name, limit)
+    except Exception as e:
+        print(f"⚠ DB error: {e}")
+        return
+
+    if not rows:
+        print(f"No logs for '{name}'")
+        return
+
+    print(f"\n── Logs: {name} (last {limit}) ──")
+    for r in rows:
+        ts = r.get("timestamp", "")[:19]
+        lvl = r.get("level", "INFO")
+        msg = r.get("message", "")
+        icon = "🔴" if lvl == "ERROR" else ("🟡" if lvl == "WARN" else "")
+        print(f"{ts} {icon}[{lvl}] {msg}")
+
+
+def cmd_health(args):
+    try:
+        from lib.db import get_all_health, get_cost_by_agent, init_db
+        init_db()
+        health_rows = get_all_health()
+        costs_today = {r["agent_name"]: r["total"] for r in get_cost_by_agent(days=1)}
+    except Exception as e:
+        print(f"⚠ DB error: {e}")
+        return
+
+    if not health_rows:
+        print("No health data yet. Run some agents first.")
+        return
+
+    print(f"\n{'AGENT':<22} {'LAST RUN':<14} {'STATUS':<10} {'RUNS':<6} {'COST TODAY':<12} {'TOTAL COST'}")
+    print("─" * 82)
+    for r in health_rows:
+        name = r["agent_name"]
+        icon = status_icon(r.get("last_status", ""))
+        last = fmt_time(r.get("last_run", ""))
+        status = r.get("last_status", "—")
+        runs = r.get("run_count", 0)
+        cost_today = costs_today.get(name, 0.0)
+        total = r.get("total_cost_usd", 0.0)
+        print(f"{name:<22} {last:<14} {icon} {status:<8} {runs:<6} ${cost_today:<11.4f} ${total:.4f}")
+
+
+def cmd_cost(args):
+    days = 7 if "--week" in args else 1
+    label = "this week" if days == 7 else "today"
+
+    try:
+        from lib.db import get_cost_by_agent, get_cost_today, init_db
+        init_db()
+        rows = get_cost_by_agent(days=days)
+        total_today = get_cost_today()
+    except Exception as e:
+        print(f"⚠ DB error: {e}")
+        return
+
+    if not rows:
+        print(f"No cost data for {label}.")
+        return
+
+    print(f"\n── Cost breakdown ({label}) ──")
+    print(f"{'AGENT':<22} {'COST':>10} {'INPUT TOK':>12} {'OUTPUT TOK':>12}")
+    print("─" * 60)
+    grand = 0.0
+    for r in rows:
+        grand += r["total"]
+        print(f"{r['agent_name']:<22} ${r['total']:>9.4f} {r['inputs']:>12,} {r['outputs']:>12,}")
+    print("─" * 60)
+    print(f"{'TOTAL':<22} ${grand:>9.4f}")
+    if days == 1:
+        print(f"\n  Today total: ${total_today:.4f}  |  Alert threshold: $15.00")
+
+
+def cmd_events(args):
+    agent = None
+    if "--agent" in args:
+        idx = args.index("--agent")
+        try:
+            agent = args[idx + 1]
+        except IndexError:
+            pass
+
+    try:
+        from lib.db import read_events, init_db
+        init_db()
+        events = read_events(agent_name=agent, since_minutes=1440)  # last 24h
+    except Exception as e:
+        print(f"⚠ DB error: {e}")
+        return
+
+    if not events:
+        print("No recent events.")
+        return
+
+    print(f"\n── Events (last 24h){f' for {agent}' if agent else ''} ──")
+    for e in events[-30:]:
+        created = e.get("created_at", "")[:16]
+        consumed = "✅" if e.get("consumed_at") else "⬜"
+        print(f"{created}  {consumed}  {e['from_agent']:<16} → {e.get('to_agent','*'):<16}  [{e['event_type']}]")
+
+
+def cmd_memory(args):
+    if len(args) < 2:
+        print("Usage: j5 memory get <key>  |  j5 memory set <key> <value>")
+        sys.exit(1)
+
+    action = args[0]
+
+    try:
+        from lib.db import _conn, init_db
+        init_db()
+    except Exception as e:
+        print(f"⚠ DB error: {e}")
+        return
+
+    if action == "get":
+        key = args[1]
+        conn = _conn()
+        c = conn.cursor()
+        c.execute("SELECT value, updated_by, updated_at FROM shared_memory WHERE key=?", (key,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            print(f"Key:  {key}")
+            print(f"Value: {row['value']}")
+            print(f"By:   {row['updated_by']} @ {row['updated_at']}")
+        else:
+            print(f"Key '{key}' not found.")
+
+    elif action == "set":
+        if len(args) < 3:
+            print("Usage: j5 memory set <key> <value>")
+            sys.exit(1)
+        key = args[1]
+        value = " ".join(args[2:])
+        conn = _conn()
+        conn.execute("""
+            INSERT INTO shared_memory (key, value, updated_by, updated_at)
+            VALUES (?, ?, 'j5-cli', datetime('now'))
+            ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_by='j5-cli', updated_at=excluded.updated_at
+        """, (key, value))
+        conn.commit()
+        conn.close()
+        print(f"✅ memory['{key}'] = {value}")
+    else:
+        print(f"Unknown memory action: {action}")
+
+
+def cmd_help():
+    print(__doc__)
+
+
+# ── Entry point ───────────────────────────────────────────────────────────
+
+def main():
+    load_env()
+    args = sys.argv[1:]
+
+    if not args or args[0] in ("-h", "--help", "help"):
+        cmd_help()
+        return
+
+    cmd = args[0]
+    rest = args[1:]
+
+    dispatch = {
+        "agents":  cmd_agents,
+        "run":     cmd_run,
+        "logs":    cmd_logs,
+        "health":  cmd_health,
+        "cost":    cmd_cost,
+        "events":  cmd_events,
+        "memory":  cmd_memory,
+    }
+
+    fn = dispatch.get(cmd)
+    if fn:
+        fn(rest)
+    else:
+        print(f"Unknown command: {cmd}")
+        cmd_help()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

@@ -9,16 +9,26 @@ from pathlib import Path
 # Agent name → Slack channel ID mapping
 # Update IDs here when channels change. Real IDs from .env as of 2026-03-04.
 CHANNEL_MAP = {
-    "shepherd":             "C0AJMV16CSW",   # #j5-ministry
-    "scribe":               "C0AJMV16CSW",   # #j5-ministry
-    "horizon":              "C0AK0SFJ9G9",   # #j5-infrastructure
-    "sentinel":             "C0AK0SFJ9G9",   # #j5-infrastructure
-    "cost-sentinel":        "C0AK0SFJ9G9",   # #j5-infrastructure
-    "morning-brief":        "C0AJY9BV524",   # #j5-command-center
-    "dropbox-sync":         "C0AJMV17GFL",   # #j5-log
-    "memory-consolidation": "C0AJMV17GFL",   # #j5-log
+    # ── Agent-dedicated channels (one per agent) ───────────────────────────
+    "shepherd":             "C0AJVF85RN0",   # #j5-shepherd-agent
+    "scribe":               "C0AK4QF0CF3",   # #j5-scribe-agent
+    "horizon":              "C0AJADR6487",   # #j5-horizon-agent
+    "sentinel":             "C0AJVF8DD1S",   # #j5-sentinel-agent
+    "cost-sentinel":        "C0AK4QBJCE5",   # #j5-cost-sentinel
+    "morning-brief":        "C0AJPR6F0MC",   # #j5-morning-brief-agent
+    "dropbox-sync":         "C0AJKFBTBCK",   # #j5-intake
+    "memory-consolidation": "C0AJVF50E04",   # #j5-memory
+
+    # ── Thematic channels (cross-agent / Curtis-facing) ────────────────────
+    "action-required":      "C0AKG7HF3CY",   # #j5-action-required
+    "ministry":             "C0AJMV16CSW",   # #j5-ministry
+    "revenue":              "C0AJKT5T7U6",   # #j5-revenue
     "infrastructure":       "C0AK0SFJ9G9",   # #j5-infrastructure
     "log":                  "C0AJMV17GFL",   # #j5-log
+    "archive":              "C0AJMV0MJ2W",   # #j5-archive
+    "family":               "C0AJRH8PLMA",   # #j5-family
+
+    # ── Fallback ───────────────────────────────────────────────────────────
     "default":              "C0AJY9BV524",   # #j5-command-center
 }
 

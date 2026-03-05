@@ -1,0 +1,454 @@
+#!/usr/bin/env python3
+"""
+j5doctor — J5 System Health Check
+Standalone script: zero lib/ dependencies, fully self-contained.
+
+Usage:
+  j5doctor              Print formatted health report
+  j5doctor --slack      Post summary to Slack #j5-command-center
+  j5doctor --json       Output raw JSON
+"""
+import os
+import sys
+import json
+import socket
+import sqlite3
+import subprocess
+from datetime import datetime
+from pathlib import Path
+
+WORKSPACE = Path(__file__).resolve().parent.parent
+SLACK_CHANNEL = "C0AJY9BV524"  # #j5-command-center
+TELEGRAM_CHAT_ID = "7177699209"
+DB_PATH = Path.home() / ".openclaw" / "workspace" / "memory" / "j5.db"
+REGISTRY_PATH = WORKSPACE / "agents" / "registry.json"
+ENV_PATH = Path.home() / ".openclaw" / ".env"
+OPENCLAW_JSON = Path.home() / ".openclaw" / "openclaw.json"
+
+
+# ── Env loading ────────────────────────────────────────────────────────────
+
+def load_env() -> dict:
+    env = {}
+    try:
+        for line in ENV_PATH.read_text().splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, _, v = line.partition("=")
+                env[k.strip()] = v.strip()
+    except Exception:
+        pass
+    return env
+
+
+# ── Individual checks ──────────────────────────────────────────────────────
+
+def check_openclaw_gateway() -> dict:
+    ok = False
+    port_ok = False
+    detail = ""
+
+    try:
+        result = subprocess.run(
+            ["launchctl", "list", "ai.openclaw.gateway"],
+            capture_output=True, text=True, timeout=5
+        )
+        ok = result.returncode == 0
+        detail = "launchctl ok" if ok else "not found in launchctl"
+    except Exception as e:
+        detail = f"launchctl error: {e}"
+
+    try:
+        s = socket.socket()
+        s.settimeout(2)
+        s.connect(("127.0.0.1", 18789))
+        s.close()
+        port_ok = True
+    except Exception:
+        port_ok = False
+
+    if ok and port_ok:
+        status = "ok"
+        msg = "running (port 18789)"
+    elif ok and not port_ok:
+        status = "warn"
+        msg = "launchctl ok but port 18789 not responding"
+    else:
+        status = "error"
+        msg = detail
+
+    return {"name": "OpenClaw gateway", "status": status, "detail": msg}
+
+
+def check_postgresql() -> dict:
+    try:
+        result = subprocess.run(
+            ["brew", "services", "list"],
+            capture_output=True, text=True, timeout=10
+        )
+        lines = result.stdout.lower()
+        if "postgresql" in lines:
+            for line in result.stdout.splitlines():
+                if "postgresql" in line.lower():
+                    if "started" in line.lower() or "running" in line.lower():
+                        return {"name": "PostgreSQL", "status": "ok", "detail": "running"}
+                    else:
+                        return {"name": "PostgreSQL", "status": "warn", "detail": line.strip()}
+        return {"name": "PostgreSQL", "status": "warn", "detail": "not found in brew services"}
+    except Exception as e:
+        return {"name": "PostgreSQL", "status": "error", "detail": str(e)}
+
+
+def check_sqlite_db() -> dict:
+    if not DB_PATH.exists():
+        return {"name": "SQLite DB", "status": "error", "detail": "j5.db not found"}
+    try:
+        size_mb = DB_PATH.stat().st_size / (1024 * 1024)
+        conn = sqlite3.connect(str(DB_PATH))
+        c = conn.cursor()
+        c.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table'")
+        table_count = c.fetchone()[0]
+        conn.close()
+        return {
+            "name": "SQLite DB",
+            "status": "ok",
+            "detail": f"{table_count} tables, {size_mb:.1f} MB"
+        }
+    except Exception as e:
+        return {"name": "SQLite DB", "status": "error", "detail": str(e)}
+
+
+def check_agent_registry() -> dict:
+    try:
+        data = json.loads(REGISTRY_PATH.read_text())
+        count = len(data.get("agents", []))
+        return {"name": "Agent registry", "status": "ok", "detail": f"{count} agents", "count": count}
+    except Exception as e:
+        return {"name": "Agent registry", "status": "error", "detail": str(e), "count": 0}
+
+
+def check_agent_health() -> list:
+    agents = []
+    try:
+        registry = json.loads(REGISTRY_PATH.read_text()).get("agents", [])
+    except Exception:
+        registry = []
+
+    health_map = {}
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        conn.row_factory = sqlite3.Row
+        c = conn.cursor()
+        c.execute("SELECT * FROM agent_health")
+        for row in c.fetchall():
+            health_map[row["agent_name"]] = dict(row)
+        conn.close()
+    except Exception:
+        pass
+
+    for a in registry:
+        name = a["name"]
+        h = health_map.get(name, {})
+        last_run = h.get("last_run")
+        last_status = h.get("last_status", "never")
+
+        if not last_run:
+            time_str = "never"
+            status = "never"
+        else:
+            try:
+                dt = datetime.fromisoformat(last_run)
+                delta = datetime.now() - dt
+                mins = int(delta.total_seconds() / 60)
+                if mins < 60:
+                    time_str = f"{mins}m ago"
+                elif mins < 1440:
+                    time_str = f"{mins // 60}h ago"
+                else:
+                    time_str = f"{delta.days}d ago"
+            except Exception:
+                time_str = last_run[:16]
+            status = last_status
+
+        agents.append({
+            "name": name,
+            "time": time_str,
+            "status": status,
+            "last_status": last_status,
+        })
+
+    return agents
+
+
+def check_api_keys(env: dict) -> list:
+    keys = [
+        "ANTHROPIC_API_KEY",
+        "SLACK_BOT_TOKEN",
+        "TODOIST_API_KEY",
+        "OPENROUTER_API_KEY",
+        "GROQ_API_KEY",
+        "DEEPGRAM_API_KEY",
+    ]
+    results = []
+    for k in keys:
+        present = bool(env.get(k))
+        results.append({"key": k, "present": present})
+    return results
+
+
+def check_disk() -> dict:
+    try:
+        result = subprocess.run(
+            ["df", "-h", "/"],
+            capture_output=True, text=True, timeout=5
+        )
+        lines = result.stdout.strip().splitlines()
+        if len(lines) >= 2:
+            parts = lines[1].split()
+            # df -h output: Filesystem, Size, Used, Avail, Capacity, Mountpoint
+            # On macOS the capacity field is like "45%"
+            for part in parts:
+                if part.endswith("%"):
+                    pct = int(part.rstrip("%"))
+                    status = "warn" if pct > 80 else "ok"
+                    return {"name": "Disk", "status": status, "detail": f"{pct}% used"}
+        return {"name": "Disk", "status": "warn", "detail": "could not parse df output"}
+    except Exception as e:
+        return {"name": "Disk", "status": "error", "detail": str(e)}
+
+
+def check_cost_today() -> dict:
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        c = conn.cursor()
+        today = datetime.now().strftime("%Y-%m-%d")
+        c.execute("SELECT COALESCE(SUM(cost_usd),0) FROM cost_tracking WHERE date=?", (today,))
+        total = c.fetchone()[0]
+        conn.close()
+        return {"name": "Cost today", "status": "ok", "detail": f"${total:.4f}", "value": total}
+    except Exception as e:
+        return {"name": "Cost today", "status": "warn", "detail": f"DB unavailable: {e}", "value": 0.0}
+
+
+def check_active_crons() -> dict:
+    try:
+        result = subprocess.run(
+            ["openclaw", "cron", "list"],
+            capture_output=True, text=True, timeout=10
+        )
+        if result.returncode != 0:
+            return {"name": "Active crons", "status": "warn", "detail": "openclaw cron list failed", "count": 0}
+        lines = [l for l in result.stdout.splitlines() if "ok" in l.lower()]
+        count = len(lines)
+        return {"name": "Active crons", "status": "ok", "detail": str(count), "count": count}
+    except FileNotFoundError:
+        return {"name": "Active crons", "status": "warn", "detail": "openclaw CLI not found", "count": 0}
+    except Exception as e:
+        return {"name": "Active crons", "status": "warn", "detail": str(e), "count": 0}
+
+
+def check_lib_imports() -> list:
+    results = []
+    for mod in ["lib.db", "lib.llm", "lib.agent_base"]:
+        try:
+            # Add workspace to path temporarily
+            if str(WORKSPACE) not in sys.path:
+                sys.path.insert(0, str(WORKSPACE))
+            __import__(mod)
+            results.append({"module": mod, "status": "ok"})
+        except Exception as e:
+            results.append({"module": mod, "status": "error", "detail": str(e)})
+    return results
+
+
+# ── Output formatters ──────────────────────────────────────────────────────
+
+def status_icon(status: str) -> str:
+    return {"ok": "✅", "warn": "⚠️ ", "error": "❌", "never": "⬜"}.get(status, "⬜")
+
+
+def fmt_agent_status(status: str) -> str:
+    return {"success": "success", "error": "error", "never": "never"}.get(status, status)
+
+
+def build_report(data: dict) -> str:
+    now = datetime.now().strftime("%a %Y-%m-%d %I:%M %p %Z")
+    lines = [f"⚡ J5 Doctor — {now}", ""]
+
+    # SYSTEM
+    lines.append("SYSTEM")
+    for check in data["system"]:
+        icon = status_icon(check["status"])
+        lines.append(f"  {icon} {check['name']:<22} {check['detail']}")
+
+    lines.append("")
+
+    # AGENTS
+    reg = data["registry"]
+    agent_count = reg.get("count", 0)
+    lines.append(f"AGENTS ({agent_count} registered)")
+    for a in data["agents"]:
+        icon = status_icon("ok" if a["status"] == "success" else
+                           "error" if a["status"] == "error" else "never")
+        time_str = a["time"]
+        status_str = fmt_agent_status(a["status"])
+        if time_str == "never":
+            lines.append(f"  {icon} {a['name']:<22} never run")
+        else:
+            lines.append(f"  {icon} {a['name']:<22} {time_str} · {status_str}")
+
+    lines.append("")
+
+    # API KEYS
+    lines.append("API KEYS")
+    for k in data["api_keys"]:
+        icon = "✅" if k["present"] else "❌"
+        lines.append(f"  {icon} {k['key']}")
+
+    lines.append("")
+
+    # COSTS
+    cost = data["cost"]
+    lines.append("COSTS")
+    lines.append(f"  💰 Today: {cost['detail']}")
+
+    lines.append("")
+
+    # INFRASTRUCTURE
+    lines.append("INFRASTRUCTURE")
+    for mod in data["lib_imports"]:
+        icon = "✅" if mod["status"] == "ok" else "❌"
+        detail = f"  ({mod.get('detail', '')})" if mod["status"] != "ok" else ""
+        lines.append(f"  {icon} {mod['module']:<24} {'OK' if mod['status'] == 'ok' else 'FAIL'}{detail}")
+
+    disk = data["disk"]
+    lines.append(f"  {status_icon(disk['status'])} {'Disk':<24} {disk['detail']}")
+
+    crons = data["crons"]
+    lines.append(f"  {status_icon(crons['status'])} {'Active crons':<24} {crons['detail']}")
+
+    lines.append("")
+    lines.append("─" * 45)
+
+    # Tally
+    ok_count = 0
+    warn_count = 0
+    err_count = 0
+
+    all_checks = (
+        data["system"]
+        + [reg]
+        + [{"status": "ok" if a["status"] in ("success", "never") else "error"} for a in data["agents"]]
+        + [{"status": "ok" if k["present"] else "error"} for k in data["api_keys"]]
+        + [cost]
+        + [{"status": m["status"]} for m in data["lib_imports"]]
+        + [disk, crons]
+    )
+    for c in all_checks:
+        s = c.get("status", "ok")
+        if s in ("ok", "never", "success"):
+            ok_count += 1
+        elif s == "warn":
+            warn_count += 1
+        else:
+            err_count += 1
+
+    lines.append(f"Overall: {ok_count} ok · {warn_count} warning · {err_count} errors")
+    return "\n".join(lines)
+
+
+def build_slack_summary(data: dict) -> str:
+    cost = data["cost"]["detail"]
+    err_count = sum(
+        1 for c in (data["system"] + data["lib_imports"])
+        if c.get("status") == "error"
+    )
+    agent_errors = sum(1 for a in data["agents"] if a["status"] == "error")
+    key_missing = sum(1 for k in data["api_keys"] if not k["present"])
+
+    lines = [
+        f"⚡ *J5 Doctor* — {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        f"  💰 Cost today: {cost}",
+        f"  {'✅' if err_count == 0 else '❌'} System checks: {len(data['system'])} total, {err_count} errors",
+        f"  {'✅' if agent_errors == 0 else '❌'} Agent errors: {agent_errors}",
+        f"  {'✅' if key_missing == 0 else '⚠️'} API keys missing: {key_missing}",
+        f"  {data['disk']['detail']} disk used",
+    ]
+    return "\n".join(lines)
+
+
+def post_slack(text: str, env: dict):
+    import urllib.request
+    token = env.get("SLACK_BOT_TOKEN", "")
+    if not token:
+        print("⚠ SLACK_BOT_TOKEN not found — skipping Slack post")
+        return
+    payload = {"channel": SLACK_CHANNEL, "text": text}
+    req = urllib.request.Request(
+        "https://slack.com/api/chat.postMessage",
+        data=json.dumps(payload).encode(),
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            result = json.loads(resp.read())
+            if result.get("ok"):
+                print("✅ Posted to Slack #j5-command-center")
+            else:
+                print(f"⚠ Slack post failed: {result.get('error', 'unknown')}")
+    except Exception as e:
+        print(f"⚠ Slack post error: {e}")
+
+
+# ── Main ───────────────────────────────────────────────────────────────────
+
+def main():
+    slack_flag = "--slack" in sys.argv
+    json_flag = "--json" in sys.argv
+
+    env = load_env()
+
+    # Run all checks
+    system_checks = [
+        check_openclaw_gateway(),
+        check_postgresql(),
+        check_sqlite_db(),
+    ]
+    registry = check_agent_registry()
+    agents = check_agent_health()
+    api_keys = check_api_keys(env)
+    disk = check_disk()
+    cost = check_cost_today()
+    crons = check_active_crons()
+    lib_imports = check_lib_imports()
+
+    data = {
+        "timestamp": datetime.now().isoformat(),
+        "system": system_checks,
+        "registry": registry,
+        "agents": agents,
+        "api_keys": api_keys,
+        "disk": disk,
+        "cost": cost,
+        "crons": crons,
+        "lib_imports": lib_imports,
+    }
+
+    if json_flag:
+        print(json.dumps(data, indent=2))
+        return
+
+    report = build_report(data)
+    print(report)
+
+    if slack_flag:
+        summary = build_slack_summary(data)
+        post_slack(summary, env)
+
+
+if __name__ == "__main__":
+    main()

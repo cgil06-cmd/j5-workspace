@@ -50,19 +50,25 @@ def send_message(channel_id: str, text: str) -> bool:
 
     channel = resolve_channel(channel_id)
     payload = {"channel": channel, "text": text}
-    req = urllib.request.Request(
-        "https://slack.com/api/chat.postMessage",
-        data=json.dumps(payload).encode(),
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-        },
-        method="POST",
-    )
-    try:
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+
+    def _do_request():
+        req = urllib.request.Request(
+            "https://slack.com/api/chat.postMessage",
+            data=json.dumps(payload).encode(),
+            headers=headers,
+            method="POST",
+        )
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read())
-            return data.get("ok", False)
+            return json.loads(resp.read())
+
+    try:
+        from lib.utils import with_retry
+        data = with_retry(_do_request, max_attempts=3, backoff=[1, 3, 7])
+        return data.get("ok", False)
     except Exception:
         return False
 

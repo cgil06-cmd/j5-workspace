@@ -15,7 +15,11 @@ Usage:
         MyAgent("my-agent", slack_channel="default").run()
 """
 import os
+import re
+import json
 import traceback
+import urllib.request
+import urllib.error
 from pathlib import Path
 from datetime import datetime
 
@@ -31,6 +35,17 @@ def load_env():
                 os.environ.setdefault(k.strip(), v.strip())
     except Exception:
         pass
+
+
+def _load_telegram_token() -> str:
+    """Extract botToken from ~/.openclaw/openclaw.json using regex (file has comments)."""
+    config_path = Path.home() / ".openclaw" / "openclaw.json"
+    try:
+        config_text = config_path.read_text()
+        match = re.search(r'"botToken":\s*"([^"]+)"', config_text)
+        return match.group(1) if match else ""
+    except Exception:
+        return ""
 
 
 class AgentBase:
@@ -113,23 +128,17 @@ class AgentBase:
         except Exception as e:
             self.log(f"Slack send failed: {e}", level="WARN")
 
-    # ── Telegram (via Beeper API) ──────────────────────────────────────────
-    def send_telegram(self, text: str):
-        import json
-        import urllib.request
-        beeper_url = os.environ.get("BEEPER_API_URL", "")
-        beeper_token = os.environ.get("BEEPER_TOKEN", "")
-        if not beeper_url or not beeper_token:
-            self.log("send_telegram: BEEPER_API_URL or BEEPER_TOKEN not set", level="WARN")
+    # ── Telegram (direct Bot API) ──────────────────────────────────────────
+    def send_telegram(self, text: str, chat_id: str = "7177699209"):
+        token = _load_telegram_token()
+        if not token:
+            self.log("send_telegram: botToken not found in openclaw.json", level="WARN")
             return
-        payload = {"text": text}
+        payload = {"chat_id": chat_id, "text": text}
         req = urllib.request.Request(
-            beeper_url,
+            f"https://api.telegram.org/bot{token}/sendMessage",
             data=json.dumps(payload).encode(),
-            headers={
-                "Authorization": f"Bearer {beeper_token}",
-                "Content-Type": "application/json",
-            },
+            headers={"Content-Type": "application/json"},
             method="POST",
         )
         try:
@@ -152,13 +161,39 @@ class AgentBase:
     # ── LLM ───────────────────────────────────────────────────────────────
     def call_claude(self, prompt: str, model: str = "claude-haiku-4-5-20251001",
                     max_tokens: int = 1000, system: str = None) -> str:
+        """Call Claude. Tracks cost in self._run_cost. Returns text only."""
         try:
-            from lib.llm import call_claude, _calc_cost
-            result = call_claude(prompt, model=model, system=system,
-                                 max_tokens=max_tokens, agent_name=self.name)
-            return result
+            from lib.llm import call_claude
+            text, cost = call_claude(prompt, model=model, system=system,
+                                     max_tokens=max_tokens, agent_name=self.name)
+            self._run_cost += cost
+            return text
         except Exception as e:
             self.log(f"Claude call failed: {e}", level="ERROR")
+            raise
+
+    def call_haiku(self, prompt: str, system: str = None, max_tokens: int = 1000) -> str:
+        """Call Haiku. Tracks cost in self._run_cost. Returns text only."""
+        try:
+            from lib.llm import call_haiku
+            text, cost = call_haiku(prompt, system=system, max_tokens=max_tokens,
+                                    agent_name=self.name)
+            self._run_cost += cost
+            return text
+        except Exception as e:
+            self.log(f"Haiku call failed: {e}", level="ERROR")
+            raise
+
+    def call_sonnet(self, prompt: str, system: str = None, max_tokens: int = 2000) -> str:
+        """Call Sonnet. Tracks cost in self._run_cost. Returns text only."""
+        try:
+            from lib.llm import call_sonnet
+            text, cost = call_sonnet(prompt, system=system, max_tokens=max_tokens,
+                                     agent_name=self.name)
+            self._run_cost += cost
+            return text
+        except Exception as e:
+            self.log(f"Sonnet call failed: {e}", level="ERROR")
             raise
 
     # ── Events ────────────────────────────────────────────────────────────
@@ -169,10 +204,19 @@ class AgentBase:
         except Exception as e:
             self.log(f"emit_event failed: {e}", level="WARN")
 
-    def read_events(self, event_type: str = None, since_minutes: int = 60) -> list:
+    def read_events(self, event_type: str = None, since_minutes: int = 60,
+                    auto_consume: bool = True) -> list:
+        """Read unconsumed events. Marks each consumed if auto_consume=True (default)."""
         try:
-            from lib.db import read_events
-            return read_events(self.name, event_type, since_minutes)
+            from lib.db import read_events, consume_event
+            events = read_events(self.name, event_type, since_minutes)
+            if auto_consume:
+                for event in events:
+                    try:
+                        consume_event(event["id"])
+                    except Exception:
+                        pass
+            return events
         except Exception:
             return []
 

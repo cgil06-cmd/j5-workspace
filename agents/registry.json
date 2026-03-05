@@ -73,7 +73,8 @@
       "cron": "0 3 * * *",
       "model": "claude-haiku-4-5-20251001",
       "status": "active",
-      "script": "crons/sentinel-nightly.py"
+      "script": null,
+      "managed_by": "openclaw-cron"
     },
     {
       "name": "cost-sentinel",
@@ -89,7 +90,8 @@
       "cron": "0 9 * * 2-7",
       "model": "claude-haiku-4-5-20251001",
       "status": "active",
-      "script": "crons/cost-alert.py"
+      "script": null,
+      "managed_by": "openclaw-cron"
     },
     {
       "name": "morning-brief",
@@ -105,7 +107,8 @@
       "cron": "30 4 * * 2-7",
       "model": "claude-haiku-4-5-20251001",
       "status": "active",
-      "script": "crons/morning-brief.py"
+      "script": null,
+      "managed_by": "openclaw-cron"
     },
     {
       "name": "dropbox-sync",
@@ -135,7 +138,8 @@
       "cron": "0 2 * * *",
       "model": "claude-haiku-4-5-20251001",
       "status": "active",
-      "script": "crons/memory-consolidation.py"
+      "script": null,
+      "managed_by": "openclaw-cron"
     }
   ]
 }

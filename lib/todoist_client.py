@@ -27,21 +27,22 @@ def _request(method: str, path: str, body: dict = None) -> Optional[dict]:
         return None
 
     url = f"https://api.todoist.com/api/v1{path}"
-    data = json.dumps(body).encode() if body else None
-    req = urllib.request.Request(
-        url,
-        data=data,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json",
-        },
-        method=method,
-    )
-    try:
+    data_bytes = json.dumps(body).encode() if body else None
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+
+    def _do_request():
+        req = urllib.request.Request(url, data=data_bytes, headers=headers, method=method)
         with urllib.request.urlopen(req, timeout=15) as resp:
             if resp.status == 204:
                 return {}
             return json.loads(resp.read())
+
+    try:
+        from lib.utils import with_retry
+        return with_retry(_do_request, max_attempts=3, backoff=[1, 3, 7])
     except urllib.error.HTTPError as e:
         body_text = e.read().decode()
         print(f"⚠ Todoist {method} {path} failed {e.code}: {body_text}")

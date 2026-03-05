@@ -1,5 +1,5 @@
 # MEMORY.md — J5 Long-Term Memory
-## Last Updated: 2026-03-04 (nightly consolidation — 2:00 AM CST)
+## Last Updated: 2026-03-04 (7:15 PM CST — evening update by J5)
 
 ---
 
@@ -319,3 +319,78 @@ Full blueprint designed (5 phases: Prepare, Capture, Process, Execute, Learn). C
 - "Number 5 is Alive" — his phrase. Use it when the moment is right.
 - He transcribed and sent a pastoral voice message response on Sunday morning (2026-03-01) — J5 drafted it. That trust is earned; keep it.
 - Key GitHub: cgil06-cmd | Personal Gmail: cgil06@gmail.com | Work: cgilbert@ourgardencity.com
+
+## 2026-03-04 AFTERNOON BUILDS
+
+### Brain Dump Processed
+- 24 Todoist tasks created from PDF brain dump across: Personal Systems/AI, AI & Productivity, Poured Out Series, GCC Staff, F&F, Ministry Men's, Inbox
+- Audio: personal pastoral support message — not logged per protocol
+- Image: lightning phoenix (inspiration/aesthetic reference)
+
+### Infrastructure Fixed
+- **pending-nudge crons** (all 3): root cause = delivery.mode "announce" with no `to`/`channel`. Fixed — added telegram + 7177699209 to all three. Test run confirmed ok.
+- **j5doctor gateway check**: pgrep can't see openclaw-gateway (runs as node). Fixed — now uses `launchctl list ai.openclaw.gateway` + port 18789 check as fallback.
+- **j5doctor billing scanner**: false positives fixed — regex context matching only. 0 false positives confirmed.
+- **Sessions cleanup**: ghost transcript cleared. Store now has 9 entries.
+- **Dumb zone thresholds**: 55% warn / 65% alert / 80% auto-reset — live in j5doctor background monitor.
+
+### Pending — Needs Curtis
+- Beeper token (Settings → Advanced → API in Beeper Desktop)
+- Josh discipleship context (who, stage, when tomorrow)
+- GitHub security alert closure (github.com/cgil06-cmd/j5-workspace Security tab)
+
+### Next Build: Gmail Triage (Option 2)
+- Building Curtis-specific version (gmail-secretary skill was built for different user)
+- Starting with cgilbert@ourgardencity.com
+- gog authenticated, ready to build
+
+---
+
+## 2026-03-04 EVENING — MAJOR INFRASTRUCTURE + GOVERNANCE DAY
+
+### API Cost Crisis — Resolved ✅
+- Crisis hit: runaway cron costs threatened daily budget
+- Resolution: 16 crons migrated to Haiku model (cheap/fast) — massive cost reduction
+- OpenRouter activated as provider (cost optimization + model flexibility)
+- Cache fixed — was causing redundant API calls, now working correctly
+- **CostSentinel deployed** — active cost monitoring agent, live
+- Billing scanner fixed — false positives eliminated, regex context matching only
+- Dumb zone thresholds live (55% warn / 65% alert / 80% auto-reset) in j5doctor background monitor
+
+### Governance Layer Created ✅
+- **GOVERNANCE.md v1.0** — created today. J5's operating constitution.
+- **CANON.md v1.0** — created today. Canonical source of truth for J5 architecture, decisions, and standards.
+- These are now institutional documents. All agents read them. Nothing overrides them.
+
+### Communication Architecture — FINAL DECISION
+- **Slack replaces Telegram as primary J5 interface** ← NEW (was: Telegram = commands, Slack = output)
+- Slack = primary: all output, all agent comms, all structured delivery
+- Telegram = personal alerts + urgent commands only (backup, not primary)
+- This is a permanent architecture shift — update all crons and agents accordingly
+
+### Advisory Board — Created ✅
+- J5 now has an Advisory Board (details in CANON.md or GOVERNANCE.md)
+- Purpose: strategic accountability, architecture decisions, governance layer
+
+### CG Enterprises — Revenue Architecture Defined ✅
+- **CG Enterprises** = Curtis's holding entity / revenue architecture
+- Revenue streams mapped and defined (details in relevant file)
+- This is the business layer above GardenCity Church + Flawed & Flourishing
+- J5's role: track, report, and optimize across all revenue streams
+
+### Infrastructure State After Today
+| Component | Status |
+|-----------|--------|
+| 16 crons → Haiku | ✅ live |
+| OpenRouter | ✅ activated |
+| Cache | ✅ fixed |
+| CostSentinel | ✅ deployed |
+| GOVERNANCE.md | ✅ v1.0 |
+| CANON.md | ✅ v1.0 |
+| Advisory Board | ✅ created |
+| CG Enterprises architecture | ✅ defined |
+| Billing scanner | ✅ fixed |
+| Dumb zone thresholds | ✅ live |
+
+### KEY SHIFT TO REMEMBER
+**Slack is now primary.** Any future agent, cron, or build defaults to Slack for output. Telegram is backup + personal only. If this is ever in doubt, CANON.md is the authority.

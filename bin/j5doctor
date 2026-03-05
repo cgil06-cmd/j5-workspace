@@ -190,8 +190,10 @@ def _fetch_cron_runs(cron_id: str, limit: int = 10) -> list:
             capture_output=True, text=True, timeout=10
         )
         raw = r.stdout
-        idx = raw.find("{")
-        data = json.loads(raw[idx:]) if idx >= 0 else {}
+        # Strip the Doctor warnings block (starts with { but contains box-drawing chars)
+        clean = re.sub(r'\{[^{]*Doctor warnings.*?─+\n', '', raw, flags=re.DOTALL)
+        m = re.search(r'\{.*\}', clean, re.DOTALL)
+        data = json.loads(m.group(0)) if m else {}
         runs = [e for e in data.get("entries", []) if e.get("action") == "finished"]
         _cron_runs_cache[key] = runs
     except Exception:
@@ -230,16 +232,23 @@ def _run_time_str(ts_ms: int) -> str:
 def _get_cron_costs_today() -> dict:
     crons = _fetch_cron_list()
     if not crons:
-        return {"total": 0.0, "runs": 0}
+        return {"total": 0.0, "runs": 0, "by_cron": []}
     start_ms = _today_start_ms()
     total = 0.0
     run_count = 0
+    by_cron = []
     for cron in crons:
+        cron_cost = 0.0
+        cron_runs = 0
         for run in _fetch_cron_runs(cron["id"], limit=10):
             if run.get("ts", 0) >= start_ms:
-                total += _run_cost(run)
-                run_count += 1
-    return {"total": total, "runs": run_count}
+                cron_cost += _run_cost(run)
+                cron_runs += 1
+        if cron_cost > 0:
+            by_cron.append({"name": cron["name"], "cost": cron_cost, "runs": cron_runs})
+        total += cron_cost
+        run_count += cron_runs
+    return {"total": total, "runs": run_count, "by_cron": by_cron}
 
 
 def check_agent_health() -> list:
@@ -369,6 +378,7 @@ def check_cost_today() -> dict:
     cron_data = _get_cron_costs_today()
     cron_total = cron_data.get("total", 0.0)
     cron_runs = cron_data.get("runs", 0)
+    by_cron = cron_data.get("by_cron", [])
     best = max(db_total, cron_total)
 
     parts = []
@@ -386,6 +396,7 @@ def check_cost_today() -> dict:
         "db_total": db_total,
         "cron_total": cron_total,
         "cron_runs": cron_runs,
+        "by_cron": by_cron,
     }
 
 
@@ -474,15 +485,18 @@ def build_report(data: dict) -> str:
     cron_total = cost.get("cron_total", 0.0)
     cron_runs = cost.get("cron_runs", 0)
     db_total = cost.get("db_total", 0.0)
+    by_cron = cost.get("by_cron", [])
     if cron_total > 0:
-        lines.append(f"  💰 Today (cron sessions): ${cron_total:.4f}  [{cron_runs} runs]")
+        lines.append(f"  💰 Today (live):  ${cron_total:.4f}  [{cron_runs} runs]")
+        for entry in by_cron:
+            lines.append(f"      {entry['name']:<26} ${entry['cost']:.4f}  [{entry['runs']} runs]")
     else:
-        lines.append(f"  💰 Today (cron sessions): $0.00  [no data]")
+        lines.append(f"  💰 Today (live):  $0.00  [no cron data]")
     if db_total > 0:
-        lines.append(f"  💰 Today (j5.db):         ${db_total:.4f}")
+        lines.append(f"  💰 Today (j5.db): ${db_total:.4f}")
     best = max(cron_total, db_total)
     if best > 0:
-        lines.append(f"  💰 Best estimate:          ${best:.4f}")
+        lines.append(f"  💰 Best estimate: ${best:.4f}")
 
     lines.append("")
 
